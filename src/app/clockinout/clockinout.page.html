@@ -1,0 +1,15 @@
+<ion-content>
+  <ion-row class="header">
+    <h1>Successful</h1>
+    <h2>{{user}}, {{user_type}}</h2>
+  </ion-row>
+  <ion-row [style.color]="clock_out ? '#FF0000' : '#00B389'" class="msg">
+    <h3>{{type}}</h3>
+    <h3>{{date_time_12h_format}}</h3>
+    <h3>For Shift:</h3>
+    <h3>{{shift_in_12h_format}} - {{shift_out_12h_format}}</h3>
+  </ion-row>
+  <ion-row class="login_btn_box">
+    <button ion-button [style.background-color]="clock_out ? '#FF0000' : '#00B389'" class="submit-btn" (click)="dismissModal()"> Okay </button>
+  </ion-row>
+</ion-content>
