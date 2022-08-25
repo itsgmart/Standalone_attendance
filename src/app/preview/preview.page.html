@@ -1,0 +1,30 @@
+<app-navbar></app-navbar>
+
+
+
+<ion-content [fullscreen]="true" style ="background-color: transparent;">
+    <div id="content">
+        <div class="overlay">
+            <app-details></app-details>
+        </div>
+        <div  *ngIf="!faceDetected" class="overlayMsg">
+            <div class="overlayText" style="color:black;">
+                Detecting face, please wait...
+            </div>
+        </div>
+        <div  *ngIf="faceDetected" class="overlayMsg">
+            <div class="overlayText">
+                Face detected. Keep still for:
+                <p style="margin:0px ;text-align:center;"><span style="font-weight: bold; font-size:30px;">{{count}}</span> seconds.</p>
+            </div>
+        </div>
+        <div *ngIf="warningShown" class="backdrop" style="display:block;">
+            <div class="overlayMsg">
+                <div class="overlayText">
+                    {{faceWarning}}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</ion-content>

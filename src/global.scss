@@ -1,0 +1,364 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+$font-family-ios-base: -apple-system, 'DM Sans', sans-serif !default;
+$font-family-md-base: 'DM Sans', sans-serif !default;
+$font-family-wp-base: 'DM Sans', sans-serif !default;
+$text-color: #000000 !default;
+$background-color: #DEE8FE !default;
+$font-size-base: 14px !default;
+
+$font-size-10: calc(#{$font-size-base} - 4px);
+$font-size-11: calc(#{$font-size-base} - 3px);
+$font-size-12: calc(#{$font-size-base} - 2px);
+$font-size-13: calc(#{$font-size-base} - 1px);
+$font-size-15: calc(#{$font-size-base} + 1px);
+$font-size-16: calc(#{$font-size-base} + 2px);
+$font-size-17: calc(#{$font-size-base} + 3px);
+$font-size-18: calc(#{$font-size-base} + 4px);
+$font-size-19: calc(#{$font-size-base} + 5px);
+$font-size-20: calc(#{$font-size-base} + 6px);
+$font-size-21: calc(#{$font-size-base} + 7px);
+$font-size-22: calc(#{$font-size-base} + 8px);
+$font-size-24: calc(#{$font-size-base} + 10px);
+$font-size-25: calc(#{$font-size-base} + 11px);
+
+$white: #FFFFFF;
+$white-a: darken($white, 3%);
+$white-b: darken($white, 6%);
+$white-c: darken($white, 12%);
+$white-d: darken($white, 24%);
+
+$black: #000000;
+$black-1: rgba($black, 0.1);
+$black-2: rgba($black, 0.2);
+$black-3: rgba($black, 0.3);
+$black-4: rgba($black, 0.4);
+$black-5: rgba($black, 0.5);
+$black-6: rgba($black, 0.6);
+$black-7: rgba($black, 0.7);
+$black-8: rgba($black, 0.8);
+$black-9: rgba($black, 0.9);
+$black-a: lighten($black, 10%);
+$black-b: lighten($black, 20%);
+$black-c: lighten($black, 40%);
+$black-d: lighten($black, 60%);
+
+//$theme-color-1: #f46819;
+$theme-color-1: #FFFFFF;
+$theme-color-1-rgb: 57,89,168;
+$theme-color-1-contrast: #ffffff;
+$theme-color-1-contrast-rgb: 255,255,255;
+$theme-color-1-shade: #324e94;
+$theme-color-1-tint: #4d6ab1;
+
+//$theme-color-2: #f46819;
+$theme-color-2: #FF6C27;
+$theme-color-2-rgb: 242,105,33;
+$theme-color-2-contrast: #000000;
+$theme-color-2-contrast-rgb: 0,0,0;
+$theme-color-2-tint: #f37837;
+
+$theme-color-3: #EEF0F9;
+$theme-color-3-rgb: 238, 240, 249;
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+
+$colors: (
+  primary:    #387ef5,
+  secondary:  #32db64,
+  danger:     #f4344f,
+  light:      #f4f4f4,
+  dark:       #222,
+  favorite:   #69BB7B,
+  sub:        #111E52,
+  red:        #FF0000,
+  green:      #00B389,
+  walkthrough:(
+    base: $theme-color-1,
+    contrast: $white
+  ),
+  walkthrough-alt:(
+    base: $theme-color-2,
+    contrast: $white
+  ),
+  walkthrough-header:(
+    base: transparent,
+    contrast: $white
+  ),
+  header:(
+    base: $theme-color-1,
+    contrast: $black
+  ),
+  header-alt:(
+    base: $theme-color-2,
+    contrast: $white
+  ),
+  facebook:(
+    base: #3b5998,
+    contrast: $white
+  ),
+  google:(
+    base: #cc181e,
+    contrast: $white
+  ),
+  twitter:(
+    base: #00aced,
+    contrast: $white
+  ),
+  button:(
+    base: $theme-color-2,
+    contrast: $white
+  ),
+  button-alt:(
+    base: $white,
+    contrast: $theme-color-2
+  ),
+  background:(
+    //base: $white-a,
+    //contrast: $black-b
+    base: $background-color,
+    contrast: $text-color
+  ),
+  tabs-navigation:(
+    base: $white,
+    contrast: $white-d
+  )
+);$font-family-ios-base: -apple-system, 'DM Sans', sans-serif !default;
+$font-family-md-base: 'DM Sans', sans-serif !default;
+$font-family-wp-base: 'DM Sans', sans-serif !default;
+$text-color: #000000 !default;
+$background-color: #DEE8FE !default;
+$font-size-base: 14px !default;
+
+$font-size-10: calc(#{$font-size-base} - 4px);
+$font-size-11: calc(#{$font-size-base} - 3px);
+$font-size-12: calc(#{$font-size-base} - 2px);
+$font-size-13: calc(#{$font-size-base} - 1px);
+$font-size-15: calc(#{$font-size-base} + 1px);
+$font-size-16: calc(#{$font-size-base} + 2px);
+$font-size-17: calc(#{$font-size-base} + 3px);
+$font-size-18: calc(#{$font-size-base} + 4px);
+$font-size-19: calc(#{$font-size-base} + 5px);
+$font-size-20: calc(#{$font-size-base} + 6px);
+$font-size-21: calc(#{$font-size-base} + 7px);
+$font-size-22: calc(#{$font-size-base} + 8px);
+$font-size-24: calc(#{$font-size-base} + 10px);
+$font-size-25: calc(#{$font-size-base} + 11px);
+
+$white: #FFFFFF;
+$white-a: darken($white, 3%);
+$white-b: darken($white, 6%);
+$white-c: darken($white, 12%);
+$white-d: darken($white, 24%);
+
+$black: #000000;
+$black-1: rgba($black, 0.1);
+$black-2: rgba($black, 0.2);
+$black-3: rgba($black, 0.3);
+$black-4: rgba($black, 0.4);
+$black-5: rgba($black, 0.5);
+$black-6: rgba($black, 0.6);
+$black-7: rgba($black, 0.7);
+$black-8: rgba($black, 0.8);
+$black-9: rgba($black, 0.9);
+$black-a: lighten($black, 10%);
+$black-b: lighten($black, 20%);
+$black-c: lighten($black, 40%);
+$black-d: lighten($black, 60%);
+
+//$theme-color-1: #f46819;
+$theme-color-1: #FFFFFF;
+$theme-color-1-rgb: 57,89,168;
+$theme-color-1-contrast: #ffffff;
+$theme-color-1-contrast-rgb: 255,255,255;
+$theme-color-1-shade: #324e94;
+$theme-color-1-tint: #4d6ab1;
+
+//$theme-color-2: #f46819;
+$theme-color-2: #FF6C27;
+$theme-color-2-rgb: 242,105,33;
+$theme-color-2-contrast: #000000;
+$theme-color-2-contrast-rgb: 0,0,0;
+$theme-color-2-tint: #f37837;
+
+$theme-color-3: #EEF0F9;
+$theme-color-3-rgb: 238, 240, 249;
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+
+$colors: (
+  primary:    #387ef5,
+  secondary:  #32db64,
+  danger:     #f4344f,
+  light:      #f4f4f4,
+  dark:       #222,
+  favorite:   #69BB7B,
+  sub:        #111E52,
+  red:        #FF0000,
+  green:      #00B389,
+  walkthrough:(
+    base: $theme-color-1,
+    contrast: $white
+  ),
+  walkthrough-alt:(
+    base: $theme-color-2,
+    contrast: $white
+  ),
+  walkthrough-header:(
+    base: transparent,
+    contrast: $white
+  ),
+  header:(
+    base: $theme-color-1,
+    contrast: $black
+  ),
+  header-alt:(
+    base: $theme-color-2,
+    contrast: $white
+  ),
+  facebook:(
+    base: #3b5998,
+    contrast: $white
+  ),
+  google:(
+    base: #cc181e,
+    contrast: $white
+  ),
+  twitter:(
+    base: #00aced,
+    contrast: $white
+  ),
+  button:(
+    base: $theme-color-2,
+    contrast: $white
+  ),
+  button-alt:(
+    base: $white,
+    contrast: $theme-color-2
+  ),
+  background:(
+    //base: $white-a,
+    //contrast: $black-b
+    base: $background-color,
+    contrast: $text-color
+  ),
+  tabs-navigation:(
+    base: $white,
+    contrast: $white-d
+  )
+);
+
+
+
+.my-custom-class {
+  --max-height: 55%;
+  --border-radius: 15px;
+  --max-width: 800%;
+}
+
+.my-custom-class .modal-wrapper {
+  background: white;
+}
+
+.logCard {
+  width:90%;
+  aspect-ratio: 4/2.6;
+  padding:10px; 
+  background-color: white;
+}
+
+.logCardContainer{
+  height:90%; 
+  margin:10px; 
+}
+
+.logCardHeader{
+  color:#FFAA24; 
+  font-weight: bold; 
+  margin:10px;
+}
+
+.logCardItem{
+  justify-content: space-between;
+  margin: 10px;
+
+  .itemHeader{
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+    color: rgb(0, 0, 72);
+  }
+  .clockInTime{
+    margin: 0;
+    color: #00A37D;
+    font-size: 12px;
+  }
+  .clockOutTime{
+    margin: 0;
+    color: red;
+    font-size: 12px;
+  }
+  .itemText{
+    margin:0px;
+    font-size: 12px;
+  }
+
+}
+
+.details_preview{
+  background: #dee9ff;
+  p {
+    color:black;
+  }
+  ion-icon{
+    color:black;
+  }
+}
+
+.details_log{
+  --background: navy;
+  margin-top: 1px!important;
+  p {
+    color:white;
+  }
+  ion-icon{
+    color:white;
+  }
+}

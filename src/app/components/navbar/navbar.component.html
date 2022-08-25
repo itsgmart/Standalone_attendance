@@ -1,0 +1,22 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="translucent">
+      <ion-title>
+          Attendance
+      </ion-title>
+
+      <ion-buttons slot="primary" *ngIf="login_status" >
+          <ion-button style="--background:#E5E5E5;" (click)="getLogin()">
+              <ion-icon size="small" slot="icon-only" name="location-outline"></ion-icon>
+          </ion-button>
+          <ion-button style="--background:#E5E5E5;" (click)="getCamera()">
+              <ion-icon size="small" slot="icon-only" name="camera-outline"></ion-icon>
+          </ion-button>
+          <ion-button style="--background:#E5E5E5;" (click)="getLogs()" expand="block" id="logs" colour="medium">
+              <ion-icon size="small" slot="icon-only" name="list-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button style="--background:#E5E5E5;" (click)="refresh()" colour="medium">
+              <ion-icon size="small" slot="icon-only" name="reload-outline"></ion-icon>
+          </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header>
