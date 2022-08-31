@@ -41,18 +41,37 @@ export class LogsPage implements OnInit {
 
   async ngOnInit() {
     this.storage.get("attendance_assignment").then((data) => {
-      console.log(data); 
       this.id = data['attendance_assignment']['id'];
     });
     console.log('initialising log page');
     this.getHistory(false);
     this.storage.get('user').then((name) => {this.initialSelectedName = name;});
     // this.getAllUsers();
+
+
   }
 
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     console.log('entering log page');
+
+
+    // Set the correct button size if device is IOS
+    this.storage.get('isDeviceIos').then(async x => {
+      if (x){
+        let btn = document.getElementById('filterBackBtn');
+        btn.style.width = '20px';
+        console.log(btn.style.width);
+        await new Promise<void>((resolve)=>{
+          setTimeout(() => {
+            console.log('entered here');
+            resolve();
+          }, 300);
+        });
+        btn.style.width = '43px';
+        console.log(btn.style.width);
+      }
+    });
   }
 
   async getAllUsers() {
@@ -78,17 +97,19 @@ export class LogsPage implements OnInit {
       };
       url = "http://192.168.0.154"; 
       this.http.post(url + '/api/attendance/getAttendanceAssignmentUsers', params, httpOptions).subscribe(async data => {
-        // data['users'].forEach(x => {
-        //   this.allUsers.push(x['name']);
-        // });
         this.allUsers = data['users'];
-        console.log(this.allUsers);
         this.userLoaded = true;
         (await loader).dismiss();
 
       });
     });
   }
+
+  /**
+   * Gets Attendance Log and check if there is filter
+   * 
+   * @param filter : true or false
+   */
 
   async getHistory(filter) {
     let loader = this.createLoader();
@@ -111,7 +132,6 @@ export class LogsPage implements OnInit {
 
       if(filter) {
         params['user'] = this.selectedId;
-        console.log(this.selectedId);
         let logDiv = document.getElementById('logCardDiv');
         logDiv.innerHTML ='';
       }
@@ -121,21 +141,23 @@ export class LogsPage implements OnInit {
         }
       }
 
-      console.log(params);
       url = "http://192.168.0.154"; 
       this.http.post(url + '/api/attendance/getLogsV2', params, httpOptions).subscribe(async data => {
         
-        console.log(data['logs']);
-        // Create log card
+        data['logs'] = data['logs'].reverse();
+
+        // Creates log card and insert into HTML
         let logDiv = document.getElementById('logCardDiv');
 
         if (data['logs'] != null) {
           data['logs'].forEach(x => {
             var options = { year: "numeric", month: 'long', day: 'numeric' };
             let name = x['user']['name'];
-            let clockInTime = new Date(x['clock_in']);
-            let shiftClockInTime = new Date(x['shift_in_time']);
-            let shiftClockOutTime = new Date(x['shift_out_time']);
+            let clockInTime = this.setDate(x['clock_in']);
+            let shiftClockInTime = this.setDate(x['shift_in_time']);
+            let shiftClockOutTime = this.setDate(x['shift_out_time']);
+
+
             let clockOutTime, punctuality, overTime,hoursWorked,clockOut;
             let clockIn= this.getDateString(clockInTime);
             let shiftClockIn = this.getDateString(shiftClockInTime);
@@ -154,7 +176,7 @@ export class LogsPage implements OnInit {
 
 
             if (x['clock_out'] != null) {
-              clockOutTime = new Date(x['clock_out']);
+              clockOutTime = new Date(x['clock_out'].replaceAll('-', '/'));
               clockOut = this.getDateString(clockOutTime);
 
               
@@ -226,6 +248,12 @@ export class LogsPage implements OnInit {
     });
   }
 
+  setDate(dateString) {
+    let temp = dateString.replaceAll('-', '/');
+    let date = new Date(temp);
+    return date;
+  }
+
   getDateString(dateTime) {
     let tempDate = dateTime;
     const options: Intl.DateTimeFormatOptions = {  day: 'numeric', month: "long", year:'numeric'};
@@ -269,9 +297,10 @@ export class LogsPage implements OnInit {
     this.filterModal.style.zIndex = '1000';
     this.backdrop.style.display = 'block';
     this.backdrop.style.zIndex = '100';
-    this.content = document.getElementById('content');
+    this.content = document.getElementById('contentPage');
     this.content.setAttribute('style','--overflow:hidden');
-    this.content.scrollToTop(0); 
+    this.content.scrollToTop(0);
+
   }
 
   hideFilterModal(buttonTriggered) {
@@ -285,18 +314,16 @@ export class LogsPage implements OnInit {
     this.filterModal.style.animation = 'filter_slide_out .2s linear';
     this.filterModal.style.animationFillMode = 'forwards';
     this.backdrop.style.display = 'none';
-    this.content = document.getElementById('content');
+    this.content = document.getElementById('contentPage');
     this.content.setAttribute('style','--overflow:auto');
   }
 
   showSelectedModal(){
-    console.log('----Showing selected modal');
       // this.latestSelectedName = this.selectedName;
       // this.latestSelectedId = this.selectedId;
       // this.selectedNameForBackBtn = this.selectedName;
       // this.selectedIdForBackBtn = this.selectedId;
       this.selectedModal = <HTMLElement>document.getElementsByClassName('selectedUserFilterModal')[0];
-      console.log('----');
       this.selectedNameForBackBtn = this.selectedName;
       this.selectedName = '';
       this.selectedModal.style.display = 'block';
@@ -316,7 +343,7 @@ export class LogsPage implements OnInit {
       this.selectedModal = <HTMLElement>document.getElementsByClassName('selectedUserFilterModal')[0];
       this.selectedModal.style.animation = 'slide_left_out .2s linear';
       this.selectedModal.style.animationFillMode = 'forwards';
-      this.content = document.getElementById('content');
+      this.content = document.getElementById('contentPage');
       this.content.setAttribute('style','--overflow:hidden');
     }
     console.log("Done hiding modal");
@@ -328,7 +355,6 @@ export class LogsPage implements OnInit {
 
   applyFilter() {
     if(this.selectedName == 'All') {
-      console.log('selectedName:',this.selectedName);
       this.getHistory(false);
     }
     else{
@@ -342,9 +368,4 @@ export class LogsPage implements OnInit {
     return loading;
   }
 
-
-
-
-
-  // End of Class
 }

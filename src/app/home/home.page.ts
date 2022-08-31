@@ -21,6 +21,10 @@ export class HomePage {
   constructor(private globalization: Globalization, public global: GlobalProviderService, public http: HttpClient, public toastController: ToastController, private navCtrl : NavController) {
   }
 
+
+  /**
+   * Initialise all necessary variables
+   */
   ngOnInit(){
     console.log('ionViewDidLoad');
     
@@ -32,15 +36,12 @@ export class HomePage {
     this.storage.set('login_status', false);
     this.storage.set('user','');
     this.storage.set('attendance_assignment', '');
-
-
+    this.storage.set('isDeviceIos', this.isDeviceIos());
 
     this.storage.get('url').then(data => {
-      console.log("Storage Data:", data);
+
       if (!data) {
         this.globalization.getDatePattern({ formatLength: 'short', selector: 'date and time' }).then((name)=> {
-          console.log('tz', name['timezone']);
-          console.log('timezone', name['timezone']);
           if (name['timezone'] == "GMT+08:00") {
             this.log['server_location'] = "SG-2";   // TBC
           } else if (name['timezone'] == "GMT-05:00") {
@@ -48,11 +49,9 @@ export class HomePage {
           } else {
             this.log['server_location'] = "SG-2";
           }
-          console.log('server location', this.log['server_location']);
         });
       } else {
         this.global.server_url = data;
-        console.log('url test', data);
         if (data == "https://www.simpple.app") {
           this.log['server_location'] = "SG-1";
         } else if (data == "https://ca.simpple.app") {
@@ -63,9 +62,6 @@ export class HomePage {
       }
     });
 
-    this.storage.keys().then(x => {
-      console.log(x);
-    });
 
   }
 
@@ -88,7 +84,6 @@ export class HomePage {
         }
         
         this.http.post(url + '/api/attendance/getAttendanceAssignmentID', this.log, httpOptions).subscribe(data => {
-          console.log(data);         
           if (data == false) {
             this.presentToast("Wrong Credentials", "warning", false);
           } else {
@@ -103,6 +98,14 @@ export class HomePage {
     });
   }
 
+  /**
+   * Toast parameters
+   * 
+   * @param msg : Message to display in toast 
+   * @param color : 'warning' (red) , 'success' (green) 
+   * @param err : true or false
+   * 
+   */
   async presentToast(msg, color, err) {
     const toast = await this.toastController.create({
       message: msg,
@@ -114,4 +117,29 @@ export class HomePage {
     if (err) 
       this.navCtrl.navigateRoot('preview');
   }
+
+
+  /**
+   * Checks if device is IOS
+   * 
+   * @returns true or false
+   */
+
+
+
+  isDeviceIos() {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform)
+
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  }
+
+
+
 }

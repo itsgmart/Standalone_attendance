@@ -2,7 +2,8 @@
 
 ion-content {
   background-color: #DEE9FF;
-  
+  --background: #dee9ff;
+
 }
 
 .backdrop{
@@ -127,7 +128,7 @@ ion-content {
   }
 
   .filterModalTopSection {
-    padding: 23px 27px;
+    padding: 30px 27px;
     border-bottom: 2px solid $black-1;
     justify-content: space-between;
     color: black;
@@ -265,10 +266,10 @@ ion-content {
 
     .modalToolbar{
       background-color: $white;
-      height: 55px;
       width: 100%;
       flex-direction: row;
-      padding: 16px 28px;
+      margin: 20px 0px;
+      padding: 28px 20px;
       border-bottom: 1px solid #D5DAE5;
 
       

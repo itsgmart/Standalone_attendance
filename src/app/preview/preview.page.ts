@@ -25,8 +25,8 @@ export class PreviewPage implements OnInit {
   displaySize: { width: number; height: number; };
   detection: faceapi.FaceDetection;
   resizedDetections: faceapi.FaceDetection;
-  count = 3;
-  maxCount = 3;
+  count = 4;
+  maxCount = 4;
   myInterval: NodeJS.Timeout;
   width: number;
   height: number;
@@ -104,7 +104,7 @@ export class PreviewPage implements OnInit {
         height: this.height,
     };
 
-
+    // Takes picture every 1s
     this.myInterval = setInterval(async ()=>{
       let res = await CameraPreview.captureSample(cameraSampleOptions);
       this.capturedImage.src = `data:image/jpeg;base64,${res.value}`; 
@@ -115,58 +115,55 @@ export class PreviewPage implements OnInit {
       this.detection = await faceapi.detectSingleFace(this.capturedImage,  new  faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.5}));
       console.log(this.detection);
 
-      await this.processImage();
+      this.processImage();
     
     }, 1000);
 
 
   }
 
-  processImage() {
-    return new Promise<void>(resolve=> {
+  async processImage() {
 
-      if (this.detection == undefined) { 
-        this.count = this.maxCount; 
-        console.log("Count:",this.count);
-        this.faceDetected = false;
+    if (this.detection == undefined) { 
+      this.count = this.maxCount; 
+      console.log("Count:",this.count);
+      this.faceDetected = false;
+      this.warningShown = false;
+    } 
+    else {  // Face is detected
+      let detect_width = this.detection.box.width;
+      let detect_height = this.detection.box.height;
+
+      // check if face is big enough, else show msg
+      if (this.isBigEnough(detect_width, detect_height))  {   
+        console.log('face is big enough');
+        this.faceDetected = true;
         this.warningShown = false;
+        this.count -= 1; 
+      }
+      else {
+        console.log('face too far away');      
+        this.faceDetected = false;
+        this.warningShown = true;
+        this.count = this.maxCount;
+      }
+
+      // if count reach 0, take picture and check face, and stop detection
+      console.log("Count:",this.count); 
+      if (this.count == 0) {  
+        console.log("Take picture"); 
+        this.faceDetected = false;
+        this.count = this.maxCount;
+        this.rawImageCheck = this.rawImage;
+        console.log('stop detection');
+        clearInterval(this.myInterval);
+        this.checkFace();
       } 
-      else {  // Face is detected
-        let detect_width = this.detection.box.width;
-        let detect_height = this.detection.box.height;
-
-        // check if face is big enough, else show msg
-        if (this.isBigEnough(detect_width, detect_height))  {   // Check if face is big enough to take pic  && this.isWithinCanvas(detect_width,detect_height,detect_x,detect_y)
-          console.log('face is big enough');
-          this.faceDetected = true;
-          this.warningShown = false;
-          this.count -= 1; 
-        }
-        else {
-          console.log('face too far away');      
-          this.faceDetected = false;
-          this.warningShown = true;
-          this.count = this.maxCount;
-        }
-
-        // if count reach 0, take picture and check face, and stop detection
-        console.log("Count:",this.count); 
-        if (this.count == 0) {  
-          console.log("Take picture"); 
-          this.faceDetected = false;
-          this.count = this.maxCount;
-          this.rawImageCheck = this.rawImage;
-          this.checkFace();
-          clearInterval(this.myInterval);
-        } 
-        this.resizedDetections = faceapi.resizeResults(
-            this.detection, 
-            this.displaySize
-        );
-      }  
-
-      resolve();
-    });
+      this.resizedDetections = faceapi.resizeResults(
+          this.detection, 
+          this.displaySize
+      );
+    }  
   }
 
 
@@ -180,7 +177,14 @@ export class PreviewPage implements OnInit {
     }
   }
 
-  checkFace() {
+  async checkFace() {
+    const toast = await this.toastController.create({
+      message: 'Face found, please wait...',
+      color: 'success',
+      position: "middle"
+    });
+    toast.present();
+    
     this.storage.set('url', this.global.server_url).then((url) => {
       const httpOptions = {
         headers: new HttpHeaders({
@@ -200,6 +204,7 @@ export class PreviewPage implements OnInit {
       url = "http://192.168.0.154";
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
+        toast.dismiss();
         // check if face is in aws face collection
         if(data) {
 
@@ -221,7 +226,6 @@ export class PreviewPage implements OnInit {
             this.startDetection();
 
           } else{
-            this.presentToast("Face detected, please wait...", "success");
             await this.clockInOut(data);    // After this start detection again
           }
         }
@@ -230,7 +234,8 @@ export class PreviewPage implements OnInit {
 
           // Continue dectection
           this.startDetection();
-        }
+        }          
+
       });
     });
   }
