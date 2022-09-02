@@ -73,7 +73,7 @@ export class PreviewPage implements OnInit {
       position: 'front', // front or rear
       parent: 'content', // the id on the ion-content  , web only
       width: this.width, //width of the camera display
-      height: this.height, //height of the camera
+      height: this.height - 56, //height of the camera
       y: 56,
       toBack: true,
     };
@@ -125,6 +125,7 @@ export class PreviewPage implements OnInit {
   async processImage() {
 
     if (this.detection == undefined) { 
+      this.showInfoDisplay();
       this.count = this.maxCount; 
       console.log("Count:",this.count);
       this.faceDetected = false;
@@ -137,13 +138,14 @@ export class PreviewPage implements OnInit {
       // check if face is big enough, else show msg
       if (this.isBigEnough(detect_width, detect_height))  {   
         console.log('face is big enough');
+        this.showInfoDisplay();
         this.faceDetected = true;
         this.warningShown = false;
         this.count -= 1; 
       }
       else {
         console.log('face too far away');      
-        this.faceDetected = false;
+        this.hideInfoDisplay();
         this.warningShown = true;
         this.count = this.maxCount;
       }
@@ -166,10 +168,24 @@ export class PreviewPage implements OnInit {
     }  
   }
 
+  hideInfoDisplay(){
+    let textEle = document.getElementsByClassName('overlayText');
+    if(textEle.length > 0){
+      let text = <HTMLElement> textEle[0];
+      text.style.display = 'none';    
+    }
+  }
 
+  showInfoDisplay(){
+    let textEle = document.getElementsByClassName('overlayText');
+    if(textEle.length > 0){
+      let text = <HTMLElement> textEle[0];
+      text.style.display = 'block';    
+    }
+  }
 
   isBigEnough(detect_width,detect_height):boolean {
-    if (detect_width >= (1/6)*this.width && detect_height >= (1/6)*this.height) { // Decrease to make box smaller
+    if (detect_width >= (1/4)*this.width && detect_height >= (1/4)*this.height) { // Decrease to make box smaller
       return true;
     }
     else {
@@ -201,7 +217,7 @@ export class PreviewPage implements OnInit {
       };
       console.log("params:", params);
       console.log(url);
-      url = "http://192.168.0.154";
+      url = "http://192.168.0.155";
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
         toast.dismiss();
