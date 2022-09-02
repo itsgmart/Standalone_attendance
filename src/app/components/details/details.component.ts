@@ -122,5 +122,17 @@ export class DetailsComponent implements OnInit {
 
   toggleDetails() {
     this.show_details = !this.show_details;
+    let textEle = document.getElementsByClassName('overlayText');
+    if(textEle.length > 0){
+      if (this.show_details) {
+        let text = <HTMLElement> textEle[0];
+        text.style.display = 'none';
+      }
+      else {
+        let text = <HTMLElement> textEle[0];
+        text.style.display = 'block';
+      }
+
+    }
   }
 }
