@@ -20,12 +20,11 @@ ion-content {
   color: black;
   flex-direction: column;
   align-items: left;
-}
+  
+  h3{
+    font-size: 4vw;;
+  }
 
-.msg {
-  color:green;
-  flex-direction: column;
-  align-items: center;
 }
 
 .submit-btn {
@@ -87,7 +86,6 @@ ion-content {
   }
 }
 
-// Done
 .filterModal {
   position: absolute;
   height: 100%;
@@ -199,12 +197,6 @@ ion-content {
       }
 
     }
-
-
-
-
-
-
   }
 
 
@@ -221,11 +213,7 @@ ion-content {
   height: 35px;
   border-radius: 5px !important;
   margin:7px;
-  // padding: 17px 54px;
-  // letter-spacing: 2.94px;
-  // line-height: 20px;
   background-color: $theme-color-2;
-  // box-shadow: 0 4px 20px 0 #FF6F24;
   border: 1px solid #E56420;
   color: white;
 }
@@ -235,7 +223,6 @@ ion-content {
   width: 80px;
   height: 35px;
   border-radius: 5px !important;
-  // box-shadow: 0 4px 20px 0 #FF6F24;
   border: 1px solid #E56420;
   background-color: white;
   margin:7px;
@@ -245,12 +232,6 @@ ion-content {
   height:200px;
   background-color: red;
 }
-
-
-
-// Not done
-
-
 
 .selectedUserFilterModal {
   position: absolute;
@@ -363,25 +344,14 @@ ion-content {
             font-weight: 600;
             font-size: $font-size-15;
             line-height: 20px;
-            // border-top: 1px solid rgba(213, 218, 229, 0.8);
-            // .item-native{
-            //   background: white;
-            // }
-
           }
 
         }
       }
 
     }
-
-
-
   }
 
-
-
- 
 }
 
 

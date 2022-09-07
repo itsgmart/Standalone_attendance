@@ -7,6 +7,13 @@ ion-card-content{
     background-color: #c0dcfa;
     color:black;
     padding-left:20;
+
+    h1 {
+        font-size: 6vw;
+    }
+    h2{
+        font-size: 4vw;
+    }
 }
 
 ion-card-header {
@@ -17,7 +24,8 @@ ion-card-header {
 
 ion-icon{
     align-self: center;
-    // color:white;
+    width:10%;
+    height:4vw;
 }
 
 // #details{

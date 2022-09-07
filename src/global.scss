@@ -307,6 +307,7 @@ $colors: (
 .logCardContainer{
   height:90%; 
   margin:10px; 
+  font-size:4vw;
 }
 
 .logCardHeader{
@@ -322,22 +323,21 @@ $colors: (
   .itemHeader{
     margin: 0;
     font-weight: bold;
-    font-size: 14px;
     color: rgb(0, 0, 72);
   }
   .clockInTime{
     margin: 0;
     color: #00A37D;
-    font-size: 12px;
+    font-size: 3vw;
   }
   .clockOutTime{
     margin: 0;
     color: red;
-    font-size: 12px;
+    font-size: 3vw;
   }
   .itemText{
     margin:0px;
-    font-size: 12px;
+    font-size: 3vw;
   }
 
 }
@@ -357,8 +357,24 @@ $colors: (
   margin-top: 1px!important;
   p {
     color:white;
+    font-size: 4vw;
   }
   ion-icon{
     color:white;
   }
+}
+
+.alert-wrapper.sc-ion-alert-md {
+  background: white;
+
+  .alert-title.sc-ion-alert-md {
+    color:black;
+
+  }
+
+  .alert-radio-label.sc-ion-alert-md {
+    color:black;
+  }
+
+
 }

@@ -26,7 +26,7 @@ ion-content {
   width: 100%;
   height: 100%;
   position: absolute;
-  z-index: 20;
+  z-index: 10;
   opacity: 1.0;
 }
 
@@ -58,4 +58,26 @@ ion-content {
     padding:5px;
     text-align: center;
   }
+}
+
+.yesBtn{
+  margin: 0;
+  width: 50%;
+  font-weight: bold;
+  background-color: #00A37D;
+  color: #FFFFFF;
+  box-shadow: 0 4px 20px 0 #00A37D;
+  border-radius: 8px;
+  border: 1px solid #00A37D;
+}
+
+.noBtn{
+  margin: 0;
+  width: 50%;
+  font-weight: bold;
+  background-color: #FF0000;
+  color: #FFFFFF;
+  box-shadow: 0 4px 20px 0 #FF0000;
+  border-radius: 8px;
+  border: 1px solid #FF0000;
 }

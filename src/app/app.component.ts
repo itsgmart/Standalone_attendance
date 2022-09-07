@@ -10,6 +10,7 @@ import * as faceapi from 'face-api.js';
 export class AppComponent {
   constructor() {
     console.log('loading face modals');
-    faceapi.nets.tinyFaceDetector.load('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights');
+    // faceapi.nets.tinyFaceDetector.load('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights');
+    faceapi.nets.tinyFaceDetector.loadFromUri('../../assets/weights');
   }
 }

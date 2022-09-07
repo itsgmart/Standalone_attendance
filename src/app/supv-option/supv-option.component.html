@@ -1,0 +1,15 @@
+
+<ion-card class='msgCard'>
+    <ion-row class='header'>
+        {{msg}}
+    </ion-row>
+    <ion-row style="padding:10px">
+        <ion-col style="display:flex; justify-content:center;">
+            <button class="btn" (click)="dismissModal('supervisor')">Supervisor</button>
+        </ion-col>
+        <ion-col style="display:flex; justify-content:center;">
+            <button class="btn" (click)="dismissModal('user')">User</button>
+        </ion-col>
+    </ion-row>
+</ion-card>
+

@@ -11,6 +11,8 @@ import { GlobalProviderService } from '../services/global-provider.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClockinoutPage } from '../clockinout/clockinout.page';
 import { LogsPage } from '../logs/logs.page';
+import { Executor } from 'selenium-webdriver';
+import { SupvOptionComponent } from '../supv-option/supv-option.component';
 
 @Component({
   selector: 'app-preview',
@@ -25,8 +27,8 @@ export class PreviewPage implements OnInit {
   displaySize: { width: number; height: number; };
   detection: faceapi.FaceDetection;
   resizedDetections: faceapi.FaceDetection;
-  count = 4;
-  maxCount = 4;
+  count = 3;
+  maxCount = 3;
   myInterval: NodeJS.Timeout;
   width: number;
   height: number;
@@ -42,12 +44,23 @@ export class PreviewPage implements OnInit {
   faceDetected: boolean = false;
   url: any;
   show_details = false;
+  isSupervisor = false;
+  
 
+  user:any;
+  shift_in:any;
+  shift_out:any;
+  user_type:any;
+  dateTime:any;
+  type: string;
+  isModalOpen = false;
 
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController) {}
 
   ngOnInit() {
     console.log('initialising preview page');
+    // faceapi.nets.tinyFaceDetector.load('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights');
+    console.log('loaded face model ', faceapi.nets.tinyFaceDetector.isLoaded);
   }
 
   ionViewDidEnter() {
@@ -124,8 +137,15 @@ export class PreviewPage implements OnInit {
 
   async processImage() {
 
-    if (this.detection == undefined) { 
-      this.showInfoDisplay();
+    if(this.isDisplayShown()) {
+      this.warningShown = false;
+      this.hideInfoDisplay();
+      this.count = this.maxCount;
+      return;
+    }
+
+    this.showInfoDisplay();
+    if (this.detection == undefined) {
       this.count = this.maxCount; 
       console.log("Count:",this.count);
       this.faceDetected = false;
@@ -138,7 +158,6 @@ export class PreviewPage implements OnInit {
       // check if face is big enough, else show msg
       if (this.isBigEnough(detect_width, detect_height))  {   
         console.log('face is big enough');
-        this.showInfoDisplay();
         this.faceDetected = true;
         this.warningShown = false;
         this.count -= 1; 
@@ -176,7 +195,17 @@ export class PreviewPage implements OnInit {
     }
   }
 
+  isDisplayShown() {
+    let detailsCard = document.getElementById('detailsCard');
+    return (detailsCard != null);
+  }
+
   showInfoDisplay(){
+    let detailsCard = document.getElementById('detailsCard');
+    if (detailsCard != null) {
+      this.hideInfoDisplay();
+      return;
+    }
     let textEle = document.getElementsByClassName('overlayText');
     if(textEle.length > 0){
       let text = <HTMLElement> textEle[0];
@@ -217,7 +246,7 @@ export class PreviewPage implements OnInit {
       };
       console.log("params:", params);
       console.log(url);
-      url = "http://192.168.0.155";
+      // url = "http://192.168.0.155";
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
         toast.dismiss();
@@ -257,34 +286,52 @@ export class PreviewPage implements OnInit {
   }
   
   async clockInOut(data) {
-    let shift_in, shift_out, user_type, user, dateTime, type;
 
-    user = data['user'];
-    shift_in = this.convertToTime(data['attendance']['shift_in_time']);
-    shift_out = this.convertToTime(data['attendance']['shift_out_time']);
-    user_type = data['attendance']['user_type'];
-    dateTime = data['attendance']['updated_at'];
-    this.storage.set('user',user).then(name => {
+
+    this.user = data['user'];
+    this.shift_in = this.convertToTime(data['attendance']['shift_in_time']);
+    this.shift_out = this.convertToTime(data['attendance']['shift_out_time']);
+    this.user_type = data['attendance']['user_type'];
+    this.dateTime = data['attendance']['updated_at'];
+    this.storage.set('user',this.user).then(name => {
       console.log(`hersadafe ${name}`);
     });
     if(data['type'] == 'Clock In') {
-      type = 'Clocked In:';
-     
+      this.type = 'Clocked In:';
+      if(this.user_type == 'user') {     // Must change to supervisor
+        console.log('creating modal for Supervisor Option');
+        const modal = await this.modalCtrl.create({
+          component: SupvOptionComponent,
+          cssClass: 'my-custom-class',
+          showBackdrop: true,
+          backdropDismiss: false
+        });
+        await modal.present();
+        console.log('modal presented');
+        await modal.onDidDismiss().then(data=>{
+
+          if (data['data']['role'] != undefined) {
+            this.user_type = data['data']['role'];
+          }
+        });
+      }
 
     } else {
-      type = 'Clocked Out:';
+      this.type = 'Clocked Out:';
+      
     }
-    
+
+    console.log('creating modal');
     //show clocked in/out attendance modal 
     const modal = await this.modalCtrl.create({
       component: ClockinoutPage,
       componentProps: { 
-        user: user,
-        user_type: user_type,
-        type: type,
-        shift_in: shift_in,
-        shift_out: shift_out,
-        dateTime: dateTime
+        user: this.user,
+        user_type: this.user_type,
+        type: this.type,
+        shift_in: this.shift_in,
+        shift_out: this.shift_out,
+        dateTime: this.dateTime
       },
       cssClass: 'my-custom-class',
       showBackdrop: true,
@@ -296,6 +343,8 @@ export class PreviewPage implements OnInit {
       this.startDetection();
     });
   }
+
+
 
   async presentToast(msg, color) {
     const toast = await this.toastController.create({

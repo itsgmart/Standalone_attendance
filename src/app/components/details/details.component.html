@@ -4,7 +4,7 @@
       <ion-icon name="arrow-down"></ion-icon>
   </ion-card-header>
 
-  <ion-card-content *ngIf="show_details">
+  <ion-card-content *ngIf="show_details" id="detailsCard">
     <ion-card-content *ngIf="!user_logged_in">
       <ion-icon size="small" slot="icon-only" name="location-outline"></ion-icon>
       {{login_prompt}}
