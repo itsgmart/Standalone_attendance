@@ -14,6 +14,7 @@ export class GlobalProviderService {
   
   constructor(public http: HttpClient) {
     this.storage.create();
+    this.storage.set('login_status', false);
     console.log('Hello GlobalProvider Provider');
    }
 }

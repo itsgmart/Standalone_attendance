@@ -14,9 +14,15 @@ export class NavbarComponent implements OnInit {
 
   constructor(private router: Router, private global: GlobalProviderService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log('Initiating navBar!');
+    if (this.router.url.includes('home')) {
+      await this.storage.set('login_status', false).then(()=>{
+        this.login_status = false;
+      });
+    }
     this.storage.get('login_status').then( value => { 
+      console.log('login status: ', value);
       this.login_status = value; 
     });
   }

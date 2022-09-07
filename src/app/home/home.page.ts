@@ -25,7 +25,7 @@ export class HomePage {
   /**
    * Initialise all necessary variables
    */
-  ngOnInit(){
+  async ngOnInit(){
     console.log('ionViewDidLoad');
     
     this.selectOptions = {

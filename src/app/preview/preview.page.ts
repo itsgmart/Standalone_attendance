@@ -224,7 +224,7 @@ export class PreviewPage implements OnInit {
 
   async checkFace() {
     const toast = await this.toastController.create({
-      message: 'Face found, please wait...',
+      message: 'Face detected, please wait...',
       color: 'success',
       position: "middle"
     });
@@ -298,7 +298,7 @@ export class PreviewPage implements OnInit {
     });
     if(data['type'] == 'Clock In') {
       this.type = 'Clocked In:';
-      if(this.user_type == 'user') {     // Must change to supervisor
+      if(this.user_type == 'supervisor') {  
         console.log('creating modal for Supervisor Option');
         const modal = await this.modalCtrl.create({
           component: SupvOptionComponent,
