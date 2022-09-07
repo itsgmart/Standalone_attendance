@@ -302,7 +302,7 @@ export class PreviewPage implements OnInit {
         console.log('creating modal for Supervisor Option');
         const modal = await this.modalCtrl.create({
           component: SupvOptionComponent,
-          cssClass: 'my-custom-class',
+          cssClass: 'supvOptionModal',
           showBackdrop: true,
           backdropDismiss: false
         });

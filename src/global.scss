@@ -297,8 +297,19 @@ $colors: (
   background: white;
 }
 
+
+.supvOptionModal {
+  --box-shadow:none;
+  --max-height: 55%;
+  --border-radius: 15px;
+  --max-width: 800%;
+  .modal-wrapper {
+    background: white;
+  }
+}
+
+
 .logCard {
-  width:90%;
   aspect-ratio: 4/2.6;
   padding:10px; 
   background-color: white;
