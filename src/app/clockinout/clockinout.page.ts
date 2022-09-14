@@ -52,8 +52,4 @@ export class ClockinoutPage implements OnInit {
     return shift_time.join('');
   }
 
-  dismissModal() {
-    console.log("Dismissing attendance modal");
-    this.modal.dismiss();
-  }
 }

@@ -389,3 +389,15 @@ $colors: (
 
 
 }
+
+.logs-content{
+  text-align: center;
+  font-size: 3vw;
+  border-bottom: dashed grey;
+}
+
+.logs-col{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

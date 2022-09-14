@@ -5,8 +5,8 @@
       </ion-title>
 
       <ion-buttons slot="primary" *ngIf="login_status" >
-          <ion-button style="--background:#E5E5E5;" (click)="getLogin()">
-              <ion-icon size="small" slot="icon-only" name="location-outline"></ion-icon>
+          <ion-button style="--background:#E5E5E5;" (click)="getDetails()" id="details">
+              <ion-icon size="small" slot="icon-only" name="alert-circle-outline"></ion-icon>
           </ion-button>
           <ion-button style="--background:#E5E5E5;" (click)="getCamera()">
               <ion-icon size="small" slot="icon-only" name="camera-outline"></ion-icon>

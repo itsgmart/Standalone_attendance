@@ -4,9 +4,6 @@
 
 <ion-content [fullscreen]="true" style ="background-color: transparent;">
     <div id="content">
-        <div class="overlay">
-            <app-details></app-details>
-        </div>
         <div  *ngIf="!faceDetected" class="overlayMsg">
             <div class="overlayText" style="color:black;">
                 Detecting face, please wait...

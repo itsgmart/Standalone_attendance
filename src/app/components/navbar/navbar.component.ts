@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController,ModalController } from '@ionic/angular';
 import {GlobalProviderService} from '../../services/global-provider.service';
+import {LogsComponent} from '../../logs/logs.component';
+
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +14,7 @@ export class NavbarComponent implements OnInit {
   storage = this.global.storage;
   login_status:any; 
 
-  constructor(private router: Router, private global: GlobalProviderService) { }
+  constructor(private router: Router, private global: GlobalProviderService, private modalCtrl:ModalController) { }
 
   async ngOnInit() {
     console.log('Initiating navBar!');
@@ -26,6 +28,13 @@ export class NavbarComponent implements OnInit {
       this.login_status = value; 
     });
   }
+
+  async getDetails() {
+    console.log('get details button pressed');
+  }
+
+
+
 
   async getLogin() {
     let logoutText = "Do you wish to log out?";
@@ -42,8 +51,16 @@ export class NavbarComponent implements OnInit {
 
   }
 
-  getLogs() {
-    this.router.navigate(['/logs']);
+  async getLogs() {
+    // this.router.navigate(['/logs']);
+
+    const modal = await this.modalCtrl.create({
+      component: LogsComponent,
+      cssClass: 'my-custom-class',
+      showBackdrop: true,
+    });
+    modal.present();
+
 
   }
 

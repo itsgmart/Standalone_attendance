@@ -14,13 +14,10 @@ const routes: Routes = [
   {
     path: 'preview',
     loadChildren: () => import('./preview/preview.module').then( m => m.PreviewPageModule)
-  },  {
-    path: 'clockinout',
-    loadChildren: () => import('./clockinout/clockinout.module').then( m => m.ClockinoutPageModule)
   },
   {
-    path: 'logs',
-    loadChildren: () => import('./logs/logs.module').then( m => m.LogsPageModule)
+    path: 'clockinout',
+    loadChildren: () => import('./clockinout/clockinout.module').then( m => m.ClockinoutPageModule)
   },
 
 ];

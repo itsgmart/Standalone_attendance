@@ -10,9 +10,10 @@ import * as faceapi from 'face-api.js';
 import { GlobalProviderService } from '../services/global-provider.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClockinoutPage } from '../clockinout/clockinout.page';
-import { LogsPage } from '../logs/logs.page';
+
 import { Executor } from 'selenium-webdriver';
 import { SupvOptionComponent } from '../supv-option/supv-option.component';
+import { resolve } from 'dns';
 
 @Component({
   selector: 'app-preview',
@@ -55,6 +56,12 @@ export class PreviewPage implements OnInit {
   type: string;
   isModalOpen = false;
 
+  modalAttendance:HTMLIonModalElement;
+  toast:HTMLIonToastElement;
+  isToastOpen = false;
+
+
+
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController) {}
 
   ngOnInit() {
@@ -63,8 +70,18 @@ export class PreviewPage implements OnInit {
     console.log('loaded face model ', faceapi.nets.tinyFaceDetector.isLoaded);
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     console.log('entering preview page');
+    await new Promise<void>((resolve)=>{
+      setTimeout(()=>{
+        resolve();
+      },100);
+    });
+
+    let logBtn = document.getElementById('logs');
+    logBtn.addEventListener("click", ()=>{clearInterval(this.myInterval)});
+    let detailsBtn = document.getElementById('details');
+    detailsBtn.addEventListener("click", ()=>{clearInterval(this.myInterval)});
     this.launchCamera();
   }
 
@@ -146,6 +163,15 @@ export class PreviewPage implements OnInit {
 
     this.showInfoDisplay();
     if (this.detection == undefined) {
+      if(this.modalAttendance != undefined) {
+        if(this.modalAttendance.isOpen) {
+          this.modalAttendance.dismiss();
+          this.modalAttendance.isOpen = false;
+        }
+      }
+
+
+
       this.count = this.maxCount; 
       console.log("Count:",this.count);
       this.faceDetected = false;
@@ -177,7 +203,7 @@ export class PreviewPage implements OnInit {
         this.count = this.maxCount;
         this.rawImageCheck = this.rawImage;
         console.log('stop detection');
-        clearInterval(this.myInterval);
+        // clearInterval(this.myInterval);
         this.checkFace();
       } 
       this.resizedDetections = faceapi.resizeResults(
@@ -223,12 +249,19 @@ export class PreviewPage implements OnInit {
   }
 
   async checkFace() {
+
     const toast = await this.toastController.create({
       message: 'Face detected, please wait...',
       color: 'success',
       position: "middle"
     });
-    toast.present();
+    
+    if(this.modalAttendance == undefined) {
+      toast.present();
+    }
+    else if(this.modalAttendance.isOpen == false){
+      toast.present();
+    }
     
     this.storage.set('url', this.global.server_url).then((url) => {
       const httpOptions = {
@@ -260,25 +293,49 @@ export class PreviewPage implements OnInit {
 
             switch(status) {
               case 'Too fast':
-                await this.presentToast(status, "warning");
+                if(this.modalAttendance == undefined) {
+                  if (this.isToastOpen ) 
+                    this.toast.dismiss();
+                  await this.presentToast(status, "warning");
+                }
+                else if(this.modalAttendance.isOpen == false){
+                  if (this.isToastOpen) 
+                    this.toast.dismiss();
+                  await this.presentToast(status, "warning");
+                }
                 break;
               case 'not assigned to location':
-                await this.presentToast(status, "warning");
+                if(this.modalAttendance == undefined) {
+                  if (this.isToastOpen ) 
+                    this.toast.dismiss();
+                  await this.presentToast(status, "warning");
+                }
+                else if(this.modalAttendance.isOpen == false){
+                  if (this.isToastOpen ) 
+                    this.toast.dismiss();
+                  await this.presentToast(status, "warning");
+                }
                 break;    
             }
 
-            // Continue dectection
-            this.startDetection();
 
           } else{
             await this.clockInOut(data);    // After this start detection again
           }
         }
         else{
-          await this.presentToast("Face not found", "danger");
 
-          // Continue dectection
-          this.startDetection();
+          if(this.modalAttendance == undefined) {
+            if (this.isToastOpen ) 
+              this.toast.dismiss();
+            await this.presentToast("Face not found", "danger");
+          }
+          else if(this.modalAttendance.isOpen == false){
+            if (this.isToastOpen ) 
+              this.toast.dismiss();
+            await this.presentToast("Face not found", "danger");
+          }
+    
         }          
 
       });
@@ -323,7 +380,7 @@ export class PreviewPage implements OnInit {
 
     console.log('creating modal');
     //show clocked in/out attendance modal 
-    const modal = await this.modalCtrl.create({
+    this.modalAttendance = await this.modalCtrl.create({
       component: ClockinoutPage,
       componentProps: { 
         user: this.user,
@@ -336,25 +393,30 @@ export class PreviewPage implements OnInit {
       cssClass: 'my-custom-class',
       showBackdrop: true,
     });
-    await modal.present();
+    this.modalAttendance.isOpen = true;
+    this.modalAttendance.present();
     console.log('modal presented');
-    modal.onDidDismiss().then(()=> {
+    this.modalAttendance.onDidDismiss().then(()=> {
       console.log('modal onDidDismiss');
-      this.startDetection();
+    
     });
   }
 
 
 
   async presentToast(msg, color) {
-    const toast = await this.toastController.create({
+    this.toast = await this.toastController.create({
       message: msg,
       duration: 1000,
       color: color,
       position: "middle"
     });
-    toast.present();
-    const { role } = await toast.onDidDismiss();
+    this.toast.present(); 
+    this.isToastOpen = true;
+   
+    await this.toast.onDidDismiss().then(()=>{
+      this.isToastOpen = false;
+    });
   }
 
   convertToTime(dateTime): string {
