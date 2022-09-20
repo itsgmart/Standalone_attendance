@@ -1,8 +1,8 @@
 .card-container{
-    width: 75%;
-    min-height: 50%;
+    height: 100%;
     background-color: white;
-    margin: 0px auto;
+    margin: 10px;
+    overflow: scroll;
 }
 
 .header{
@@ -22,3 +22,36 @@
     color:black;
 }
 
+
+.backdrop {
+    background-color: black;
+    opacity: 0.7;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.top{
+    height: 27vw;
+
+    .top-1{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+
+        ion-icon{
+            width: 10%;
+            height: auto;
+        }
+
+        .filterBtn{
+            color: white;
+            background-color: #ff891a;
+            width: 20%;
+            height: 8vw;
+            font-size: 5vw;
+            border-radius: 5px;
+        }
+
+    }
+}

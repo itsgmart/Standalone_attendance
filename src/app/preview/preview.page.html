@@ -1,8 +1,233 @@
-<app-navbar></app-navbar>
+<div class="backdrop" style="display:none"></div>
+
+<!-- Filter Modal -->
+<div class="filterModal" style="display: none">
+  <ion-row class="filterModalTopSection">
+    <span>Filter</span>
+    <div tappable class="back-btn" (click)="hideFilterModal('true')">
+      <ion-icon name="close-circle-outline"></ion-icon>
+    </div>
+  </ion-row>
+
+  <ion-row class="filterSelectUser">
+    <div class="icon-holder"><ion-icon name="people-outline"></ion-icon></div>
+    <ion-label>User</ion-label> 
+    <div tappable class="select" (click)="showSelectedModal()">
+      {{selectedName}}
+    </div>
+    <button ion-button no-padding no-margin style="position:relative;left: 83%;bottom: 28px;"class="userFilterCloseBtn" (click)="clearSearch()"><img src="../../assets/icon/close.svg"/></button>  
+  </ion-row>
+
+  <ion-grid class="btmFilter">
+    <ion-row>
+      <button ion-button outline no-padding no-margin class="btmFilterBtn applyBtn" (click)="applyFilter()">Apply</button>
+    </ion-row>
+    <ion-row>
+      <button ion-button no-padding no-margin class="btmFilterBtn resetBtn" (click)="clearSearch()">Reset filter</button>
+    </ion-row>
+  </ion-grid>
+</div>
+<!-- User Filter Modal -->
+<div class="selectedUserFilterModal" style="display: none">
+  <ion-grid no-padding>
+    <ion-row class="modalToolbar">
+      <div tappable class="back-btn" (click)="hideSelectedModal('selectUser','true')">
+        <img src="../../assets/icon/back.svg" />
+        <span>Filter</span>
+      </div>
+    </ion-row>
+
+    <ion-row class="selectUserBottomView">
+      <hr/>
+      <ion-row class="userNameList">
+        <ion-searchbar no-padding placeholder="Search" [(ngModel)]="this.selectedName"></ion-searchbar>
+        <ion-list tappable *ngFor="let e of allUsers | filter: this.selectedName" (click)="selectedValue(e.name,e.id)">
+          <ion-item>
+              <ion-option>{{e.name}}<span *ngIf="this.initialSelectedName == e['name']"> (You)</span></ion-option>
+          </ion-item>
+        </ion-list>
+      </ion-row>
+    </ion-row>
+  </ion-grid>
+</div>
 
 
 
-<ion-content [fullscreen]="true" style ="background-color: transparent;">
+
+<ion-header [translucent]="true">
+    <ion-toolbar color="translucent">
+        <ion-title>
+            Attendance
+        </ion-title>
+
+        <ion-buttons slot="primary">
+            <ion-button style="--background:#E5E5E5;" (click)="openDetails()" id="details">
+                <ion-icon size="small" slot="icon-only" name="alert-circle-outline"></ion-icon>
+            </ion-button>
+            <ion-button style="--background:#E5E5E5;" (click)="getCamera()">
+                <ion-icon size="small" slot="icon-only" name="camera-outline"></ion-icon>
+            </ion-button>
+            <ion-button style="--background:#E5E5E5;" (click)="openLogs()" expand="block" id="logs" colour="medium">
+                <ion-icon size="small" slot="icon-only" name="list-circle-outline"></ion-icon>
+            </ion-button>
+            <ion-button style="--background:#E5E5E5;" (click)="refresh()" colour="medium">
+                <ion-icon size="small" slot="icon-only" name="reload-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" style ="background-color: transparent;" id = "contentPage">
+    <div class="modal-backdrop" *ngIf="(isLogsOpen == true) || (isDetailsOpen == true)"></div>
+
+    <!-- Logs Modal -->
+    <ion-card class="card-container" *ngIf="isLogsOpen">
+      <ion-content>
+        <div class="top"> 
+          <div class = "top-1">
+            <button class="filterBtn" (click)="showFilterModal()"><img src="../../assets/icon/filter.svg">Filter</button>
+      
+            <button class="iconBtn" (click)="closeLogModal()"><ion-icon name="close-circle-outline"></ion-icon></button>
+          </div>
+      
+          <div class="top-header">
+            Attendance Logs
+          </div>
+      
+          <ion-segment (ionChange)="segmentChanged($event)" value="All" role="tablist">
+            <ion-segment-button value="All">
+              <ion-row>
+                <p no-margin style="border-right: 1px solid #E3E3E3;">All</p>
+              </ion-row>
+              <span class="activated_border"></span>
+            </ion-segment-button>
+            <ion-segment-button value="Clock_In">
+              <ion-row>
+                <p no-margin style="border-right: 1px solid #E3E3E3;">Clock In</p>
+              </ion-row>
+              <span class="activated_border"></span>
+            </ion-segment-button>
+            <ion-segment-button value="Clock_Out">
+              <ion-row>
+                <p no-margin>Clock Out</p>
+              </ion-row>
+              <span class="activated_border"></span>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
+        
+        <ion-row class="logs-header">
+          <ion-col>
+            Clock Time
+          </ion-col>
+          <ion-col>
+            Type
+          </ion-col>
+          <ion-col>
+            Name
+          </ion-col>
+        </ion-row>
+
+        <div id="logs-card">
+          
+        </div>
+        
+
+        <ion-infinite-scroll position="bottom" threshold="5%" (ionInfinite)="loadData($event)">
+          <ion-infinite-scroll-content
+            loadingSpinner="bubbles"
+            loadingText="Loading more data...">
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ion-content>
+    </ion-card>
+
+    <!-- Details Modal -->
+    <ion-grid class="grid-container" *ngIf="isDetailsOpen">
+
+      <!-- Card Title  -->
+      <ion-row class="header1">
+        <ion-col>
+          <div>Local Attendance Details:</div>
+        </ion-col>
+        <button ion-button (click)="dismissModal()" class="crossicon">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </button>
+      </ion-row>
+      
+      <!--  -->
+      
+      <ion-row>
+        <ion-col class="default">
+          <div>Location Code: </div>
+        </ion-col>
+        <ion-col class="default">
+          {{assignment.location}}
+        </ion-col>
+      </ion-row>
+      <!--  -->
+      
+      <!--  -->
+      <ion-row>
+        <ion-col class="default">
+          <div>Overtime Limit: </div>
+        </ion-col>
+        <ion-col class="default">
+          {{assignment.overtime_limit}}
+        </ion-col>
+      </ion-row>
+      <!--  -->
+      
+      <!--  -->
+      <ion-row class="header1">
+        <ion-col>
+          <div>Shift timing(s)</div>
+        </ion-col>
+      </ion-row>
+      <!--  -->
+      
+      <!--  -->
+      <ion-row>
+        <ion-col class="header2">
+          <div>Supervisor</div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <!-- row 1 /2  -->
+        <ion-col class="default">
+          <div>Shift timing</div>
+        </ion-col>
+        <!-- print Supervisor shift timing dynamically -->
+        <ion-col class="default" id='ShiftTimeSupervisor'>
+        </ion-col>
+      </ion-row>
+      <!--  -->
+      
+      
+      <!--  -->
+      <ion-row>
+        <ion-col class="header2">
+          <div>Cleaner</div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <!-- row 1 /2  -->
+        <ion-col class="default">
+          <div>Shift timing</div>
+        </ion-col>
+        <!-- print Cleaner shift timing dynamically -->
+        <ion-col class="default" id='ShiftTimeEmployee'>
+        </ion-col>
+      </ion-row>
+      <!--  -->
+
+    </ion-grid>
+
+
+      
+
+
     <div id="content">
         <div  *ngIf="!faceDetected" class="overlayMsg">
             <div class="overlayText" style="color:black;">

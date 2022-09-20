@@ -15,6 +15,16 @@ export class LogsComponent implements OnInit {
   
   storage = this.global.storage;
   id:any;
+  user
+  userLoaded = false;
+  allUsers: any;
+  latestSelectedName: any;
+  selectedName: any;
+  filterModal: HTMLElement;
+  backdrop: HTMLElement;
+
+
+
 
   constructor(private http : HttpClient, private global:GlobalProviderService, private loader:LoadingController) { }
 
@@ -53,11 +63,11 @@ export class LogsComponent implements OnInit {
       url = "http://192.168.0.154";
       this.http.post(url + '/api/attendance/getLogsV3', params, httpOptions).subscribe(async data => {
         console.log(data);
-        console.log(data['logs']);
+        
 
         let logCard = document.getElementById('logs-card');
 
-        data['logs'].forEach((log) =>{
+        data['all_logs'].forEach((log) =>{
           let row = document.createElement('ion-row');
           row.setAttribute('class','logs-content');
           let colValue = Object.values(log);
@@ -96,6 +106,60 @@ export class LogsComponent implements OnInit {
   async createLoader() {
     const loading = await this.loader.create();
     return loading;
+  }
+
+  segmentChanged(ev: any) {
+    console.log('Segment changed', ev);
+  }
+
+  showFilterModal(type) {
+    console.log('showing filter model');
+    this.getAllUsers();
+    this.latestSelectedName = this.selectedName;
+    
+    this.filterModal = <HTMLElement>document.getElementsByClassName('filterModal')[0];
+    this.backdrop = <HTMLElement>document.getElementsByClassName('backdrop')[0];
+    this.filterModal.style.display = 'block';
+    this.filterModal.style.animation = 'filter_slide_in .2s linear';
+    this.filterModal.style.animationFillMode = 'forwards';
+    this.filterModal.style.zIndex = '1000';
+    this.backdrop.style.display = 'block';
+    this.backdrop.style.zIndex = '100';
+    // this.content = document.getElementById('contentPage');
+    // this.content.setAttribute('style','--overflow:hidden');
+    // this.content.scrollToTop(0);
+
+  }
+
+  async getAllUsers() {
+    if (this.userLoaded)
+      return;
+    let loader = this.createLoader();
+    (await loader).present();
+
+    this.storage.get('url').then((url) => {
+      console.log(url);
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': 'my-auth-token',
+          'Accept': '*',
+          'Access-Control-Allow-Methods': 'POST',
+          'Access-Control-Allow-Origin': '*'
+        })
+      };
+
+      const params = {
+        "attendance_id" : this.id,
+      };
+      url = "http://192.168.0.154"; 
+      this.http.post(url + '/api/attendance/getAttendanceAssignmentUsers', params, httpOptions).subscribe(async data => {
+        this.allUsers = data['users'];
+        this.userLoaded = true;
+        (await loader).dismiss();
+
+      });
+    });
   }
 
 

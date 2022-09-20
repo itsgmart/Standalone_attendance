@@ -3,7 +3,7 @@ import { Plugins } from "@capacitor/core"
 const { CameraPreview } = Plugins;
 import { CameraPreviewOptions, CameraPreviewPictureOptions, CameraSampleOptions } from '@capacitor-community/camera-preview';
 import '@capacitor-community/camera-preview';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { ModalController, NavController, ToastController, LoadingController  } from '@ionic/angular';
 import * as faceapi from 'face-api.js';
 // import { File } from '@awesome-cordova-plugins/file/ngx';
 // import { TouchSequence } from 'selenium-webdriver';
@@ -14,6 +14,10 @@ import { ClockinoutPage } from '../clockinout/clockinout.page';
 import { Executor } from 'selenium-webdriver';
 import { SupvOptionComponent } from '../supv-option/supv-option.component';
 import { resolve } from 'dns';
+import { ChildActivationStart } from '@angular/router';
+
+
+
 
 @Component({
   selector: 'app-preview',
@@ -54,15 +58,39 @@ export class PreviewPage implements OnInit {
   user_type:any;
   dateTime:any;
   type: string;
-  isModalOpen = false;
+  isLogsOpen = false;
+  isDetailsOpen = false;
 
   modalAttendance:HTMLIonModalElement;
   toast:HTMLIonToastElement;
   isToastOpen = false;
 
+  logCached = {
+    All: [],
+    Clock_In: [],
+    Clock_Out: []
+  }
+  userLoaded = false;
+  allUsers: any;
+  latestSelectedName: any;
+  selectedName = "All";
+  filterModal: HTMLElement;
+  backdrop: HTMLElement;
+  content:any;
 
+  assignment:any;
+  shift_hours_split:any;
+  shift_hours_supervisor_split:any;
+  selectedModal: HTMLElement;
+  selectedNameForBackBtn: string;
+  initialSelectedName: string;
+  selectedId: any;
 
-  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController) {}
+  clkinOffset = 0;
+  clkoutOffset = 0;
+  firstLoad = true;
+
+  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private loader:LoadingController) {}
 
   ngOnInit() {
     console.log('initialising preview page');
@@ -78,11 +106,23 @@ export class PreviewPage implements OnInit {
       },100);
     });
 
-    let logBtn = document.getElementById('logs');
-    logBtn.addEventListener("click", ()=>{clearInterval(this.myInterval)});
-    let detailsBtn = document.getElementById('details');
-    detailsBtn.addEventListener("click", ()=>{clearInterval(this.myInterval)});
     this.launchCamera();
+    this.content = document.getElementById('contentPage');
+    this.storage.get('attendance_assignment').then((data)=>{
+      console.log("--debug");
+      console.log(data['attendance_assignment']);
+      this.assignment = data['attendance_assignment'];
+
+      this.shift_hours_split = this.assignment.shift_hours.split("|");
+      this.shift_hours_supervisor_split = this.assignment.shift_hours_supervisor.split("|");
+      
+    });
+  
+
+    
+    
+
+
   }
 
   ionViewDidLeave() {
@@ -117,7 +157,7 @@ export class PreviewPage implements OnInit {
     this.startDetection();
   }
 
-  async startDetection() {
+  async startDetection() { 
     console.log("start detection");
     this.storage.get("attendance_assignment").then( (data) => {  
       this.id = data['attendance_assignment']['id'];    
@@ -351,6 +391,7 @@ export class PreviewPage implements OnInit {
     this.user_type = data['attendance']['user_type'];
     this.dateTime = data['attendance']['updated_at'];
     this.storage.set('user',this.user).then(name => {
+      this.initialSelectedName = name;
       console.log(`hersadafe ${name}`);
     });
     if(data['type'] == 'Clock In') {
@@ -422,5 +463,367 @@ export class PreviewPage implements OnInit {
   convertToTime(dateTime): string {
     return dateTime.split("-")[2].split(" ")[1];
   }
+
+
+
+  async createLoader() {
+    const loading = await this.loader.create();
+    return loading;
+  }
+
+  refresh() {
+    window.location.reload();
+  }
+
+  /**
+   * Logs modal functions
+   */
+
+  async openLogs() {     
+    this.isLogsOpen = true;
+    clearInterval(this.myInterval);
+    this.content.setAttribute('style','--overflow:hidden');
+    this.content.scrollToTop(0);
+    // let el = this.
+
+
+    await this.getLogs(false, undefined);
+
+    
+
+
+
+  }
+  
+  getLogs(isFiltered, scrollEvent) {
+    return new Promise<void>(async (resolve) =>{
+      if(this.firstLoad) {
+        var loader = this.createLoader();
+        (await loader).present();
+      }
+  
+      this.storage.get('url').then((url)=>{
+        
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': 'my-auth-token',
+            'Accept': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Origin': '*'
+          })
+        };
+        const params = {
+          "attendance_id" : this.id,
+          "clkinoffset" : this.clkinOffset,
+          "clkoutoffset" : this.clkoutOffset
+        };
+
+        if(isFiltered) {
+          params['user'] = this.selectedId;
+        }
+        else {
+          if(params['user'] != null) {
+            delete params['user'];
+          }
+        }
+
+
+        console.log("debug");
+        console.log(params);
+  
+        url = "http://192.168.0.155";
+        this.http.post(url + '/api/attendance/getLogsV3', params, httpOptions).subscribe(async data => {
+          
+          
+         
+          this.createLogRows(data['all_logs'], 'All');
+          this.createLogRows(data['clock_in_logs'], 'Clock_In');
+          this.createLogRows(data['clock_out_logs'], 'Clock_Out');
+
+          console.log("After query");
+          console.log(data);
+
+          if (this.firstLoad) {
+            (await loader).dismiss();
+            this.firstLoad = false;
+          }
+
+          let segment = document.getElementsByTagName('ion-segment')[0];
+          let logCard = document.getElementById('logs-card');
+
+          for (let i = 0; i < this.logCached[segment.value].length; i++) {
+            logCard.append(this.logCached[segment.value][i]);
+          }
+
+          this.clkinOffset += data['clock_in_logs'].length;
+          this.clkoutOffset += data['clock_out_logs'].length;
+
+          if (scrollEvent != undefined)
+            scrollEvent.target.complete();
+          resolve();
+
+
+        });
+      });
+
+    });
+
+  }
+
+  createLogRows(obj, type) {
+    obj.forEach((log) =>{
+      let row = document.createElement('ion-row');
+      row.setAttribute('class','logs-content');
+      let colValue = Object.values(log);
+      let colLength = colValue.length;
+
+      for(let i =0; i<colLength; i++) {
+        if(i==2) {
+          let col = <HTMLElement>document.createElement('ion-col');
+          col.setAttribute('class','logs-col');
+          col.innerHTML = <string> colValue[0];
+          row.append(col);
+          break;
+        }
+        let col = <HTMLElement>document.createElement('ion-col');
+        col.setAttribute('class','logs-col');
+        col.innerHTML = <string> colValue[i+1];
+        row.append(col);
+
+
+      }
+
+
+      this.logCached[type].push(row);
+
+    });
+
+  }
+
+  
+  segmentChanged(ev: any) {
+    let logCard = document.getElementById('logs-card');
+    logCard.innerText = '';
+    console.log('--test');
+    console.log(ev);
+    console.log(this.logCached);
+    switch(ev['detail']['value']) {
+      case 'All':
+        this.logCached.All.forEach((x) =>{
+          logCard.append(x)
+        });
+        break;
+      case 'Clock_In':
+        console.log('clock in loop');
+        this.logCached.Clock_In.forEach((x) =>{
+          
+          logCard.append(x)
+        });
+        break;
+      case 'Clock_Out':
+        console.log('clock out loop');
+        this.logCached.Clock_Out.forEach((x) =>{
+          logCard.append(x)
+        });
+        break;
+    }
+
+
+  }
+  
+  showFilterModal(type) {
+    console.log('showing filter model');
+    this.getAllUsers();
+    this.latestSelectedName = this.selectedName;
+    
+    this.filterModal = <HTMLElement>document.getElementsByClassName('filterModal')[0];
+    this.backdrop = <HTMLElement>document.getElementsByClassName('backdrop')[0];
+    this.filterModal.style.display = 'block';
+    this.filterModal.style.animation = 'filter_slide_in .2s linear';
+    this.filterModal.style.animationFillMode = 'forwards';
+    this.filterModal.style.zIndex = '1000';
+    this.backdrop.style.display = 'block';
+    this.backdrop.style.zIndex = '100';
+    // this.content = document.getElementById('contentPage');
+    // this.content.setAttribute('style','--overflow:hidden');
+    // this.content.scrollToTop(0);
+
+  }
+
+  closeLogModal() {
+    console.log("closing log modal");
+    this.isLogsOpen = false;
+  
+    this.logCached = {
+      All: [],
+      Clock_In: [],
+      Clock_Out: []
+    }
+    this.selectedName = 'All';
+    this.clkinOffset = 0;
+    this.clkoutOffset = 0;
+    this.firstLoad = true;
+
+    this.startDetection();
+  }
+
+  async getAllUsers() {
+    if (this.userLoaded)
+      return;
+    let loader = this.createLoader();
+    (await loader).present();
+
+    this.storage.get('url').then((url) => {
+      console.log(url);
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': 'my-auth-token',
+          'Accept': '*',
+          'Access-Control-Allow-Methods': 'POST',
+          'Access-Control-Allow-Origin': '*'
+        })
+      };
+
+      const params = {
+        "attendance_id" : this.id,
+      };
+      url = "http://192.168.0.155"; 
+      this.http.post(url + '/api/attendance/getAttendanceAssignmentUsers', params, httpOptions).subscribe(async data => {
+        this.allUsers = data['users'];
+        this.userLoaded = true;
+        (await loader).dismiss();
+
+      });
+    });
+  }
+
+  showSelectedModal() {
+    this.selectedModal = <HTMLElement>document.getElementsByClassName('selectedUserFilterModal')[0];
+    this.selectedNameForBackBtn = this.selectedName;
+    this.selectedName = '';
+    this.selectedModal.style.display = 'block';
+    this.selectedModal.style.animation = 'slide_left .2s linear';
+    this.selectedModal.style.animationFillMode = 'forwards';
+    this.selectedModal.style.zIndex = '1003';
+
+  }
+
+  selectedValue(name,id) {
+    this.selectedName = name;
+    this.selectedId = id;
+    this.hideSelectedModal('selectUser',false);
+  }
+
+  hideSelectedModal(type,buttonTriggered) {
+    console.log("Button triggered = ",buttonTriggered);
+    if (type == 'selectUser') {
+      if(buttonTriggered){
+        console.log("Back button is pressed");
+        this.selectedName = this.selectedNameForBackBtn;
+      }
+      this.selectedModal = <HTMLElement>document.getElementsByClassName('selectedUserFilterModal')[0];
+      this.selectedModal.style.animation = 'slide_left_out .2s linear';
+      this.selectedModal.style.animationFillMode = 'forwards';
+      this.content = document.getElementById('contentPage');
+      this.content.setAttribute('style','--overflow:hidden');
+    }
+    console.log("Done hiding modal");
+  }
+
+  clearSearch(){
+    this.selectedName = "All";
+  }
+
+  applyFilter() {
+    this.clkinOffset = 0;
+    this.clkoutOffset = 0;
+    let logDiv = document.getElementById('logs-card');
+    logDiv.innerHTML = '';
+    this.logCached = {
+      All: [],
+      Clock_In: [],
+      Clock_Out: []
+    }
+    this.firstLoad = true;
+    this.getLogs(this.isFiltered(), undefined);  
+    this.hideFilterModal(false);
+  }
+
+  hideFilterModal(buttonTriggered) {
+    console.log("Hiding filter modal")
+    //If filter values werent applied then get the latest applied filters
+    if(buttonTriggered){
+      this.selectedName = this.latestSelectedName;
+    }
+    this.filterModal = <HTMLElement>document.getElementsByClassName('filterModal')[0];
+    this.backdrop = <HTMLElement>document.getElementsByClassName('backdrop')[0];
+    this.filterModal.style.animation = 'filter_slide_out .2s linear';
+    this.filterModal.style.animationFillMode = 'forwards';
+    this.backdrop.style.display = 'none';
+    this.content = document.getElementById('contentPage');
+    this.content.setAttribute('style','--overflow:auto');
+  }
+
+  isFiltered() {
+    return this.selectedName == 'All' ?  false : true;
+  }
+
+  loadData(event) {
+    console.log('--debug');
+    console.log(event);
+    this.getLogs(this.isFiltered(), event);
+  }
+
+
+  /**
+   * Details modal functions
+   */
+  async openDetails() {
+    this.isDetailsOpen = true;
+    clearInterval(this.myInterval);
+    this.content.setAttribute('style','--overflow:hidden');
+    this.content.scrollToTop(0);
+
+    await new Promise<void>((resolve)=>{
+      setTimeout(() => {
+        resolve();
+      }, 100);
+    });
+
+
+    let el = document.getElementById('ShiftTimeEmployee');
+    el.innerHTML='';
+    this.shift_hours_split.forEach((value)=> 
+    {
+      let row = document.createElement('ion-row');
+      row.innerHTML = value + "hrs";
+      el.append(row);
+    });
+    
+    
+    let el1 = document.getElementById('ShiftTimeSupervisor');
+    el1.innerHTML='';
+    this.shift_hours_supervisor_split.forEach((value)=> 
+    {
+      let row = document.createElement('ion-row');
+      row.innerHTML = value + "hrs";
+      el1.append(row);
+    });
+
+
+
+  }
+
+  dismissDetailsModal(){
+    console.log('Close details modal');
+    this.isDetailsOpen = false;
+
+    this.startDetection();
+  }
+
+
+
 
 }

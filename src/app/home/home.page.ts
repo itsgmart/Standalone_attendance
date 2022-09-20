@@ -87,6 +87,7 @@ export class HomePage {
           if (data == false) {
             this.presentToast("Wrong Credentials", "warning", false);
           } else {
+            console.log(data);
             this.storage.set('attendance_assignment', data);
             this.storage.set('login_status', true);
             // this.storage.set('attendance_assignment_id', data['attendance_assignment']['id']);

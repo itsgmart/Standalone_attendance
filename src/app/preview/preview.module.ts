@@ -6,7 +6,7 @@ import { PreviewPageRoutingModule } from './preview-routing.module';
 import { PreviewPage } from './preview.page';
 import { NgxFaceApiJsModule } from 'ngx-face-api-js';
 import {CameraPreview} from '@capacitor-community/camera-preview';
-import { ComponentsModule } from '../components/components.module';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 @NgModule({
   imports: [
@@ -14,12 +14,12 @@ import { ComponentsModule } from '../components/components.module';
     FormsModule,
     IonicModule,
     PreviewPageRoutingModule,
-    ComponentsModule
+    Ng2SearchPipeModule,
   ],
   declarations: [
     PreviewPage,
   ],
-
+  exports: [PreviewPage]
   
 })
 export class PreviewPageModule {}

@@ -1,6 +1,33 @@
+<div class="backdrop"></div>
 <ion-card class="card-container">
-  <div class="header">
+  <!-- <div class="header">
     <h2>Attendance Logs</h2>
+  </div> -->
+
+  <div class="top">
+    <div class = "top-1">
+      <button class="filterBtn" (click)="showFilterModal()">Filter</button>
+
+      <ion-icon name="close-circle-outline"></ion-icon>
+    </div>
+
+    <div style="height:10%; padding: 7px 10px">
+      Attendance Log
+    </div>
+
+    <ion-segment (ionChange)="segmentChanged($event)">
+      <ion-segment-button value=":All">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Clock In">
+        <ion-label>Clock In</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Clock Out">
+        <ion-label>Clock Out</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+
   </div>
 
   <div id="logs-card">
@@ -16,5 +43,9 @@
       </ion-col>
     </ion-row>
   </div>
+
+
+
+
 
 </ion-card>

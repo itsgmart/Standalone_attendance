@@ -287,6 +287,14 @@ $colors: (
 
 
 
+.logModal{
+  height:100%;
+  width:100%;
+  padding-top: 47px;
+}
+
+
+
 .my-custom-class {
   --max-height: 55%;
   --border-radius: 15px;
@@ -400,4 +408,45 @@ $colors: (
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@keyframes filter_slide_in {  //Filter modal
+  from {
+    left: -300px;
+  }
+
+  to {
+    left: 0;
+  }
+}
+
+@keyframes filter_slide_out {
+  from {
+    left: 0;
+  }
+
+  to {
+    left: -300px;
+    z-index: 0;
+  }
+}
+
+@keyframes slide_left {  //Slide to Left 100%
+  from {
+    right: -100%;
+  }
+
+  to {
+    right: 0;
+  }
+}
+
+@keyframes slide_left_out {
+  from {
+    right: 0;
+  }
+
+  to {
+    right: -100%;
+  }
 }
