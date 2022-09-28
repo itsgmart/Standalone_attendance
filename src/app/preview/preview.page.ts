@@ -90,6 +90,8 @@ export class PreviewPage implements OnInit {
   clkoutOffset = 0;
   firstLoad = true;
 
+  enable_attendance_log:any;
+
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private loader:LoadingController) {}
 
   ngOnInit() {
@@ -112,7 +114,7 @@ export class PreviewPage implements OnInit {
       console.log("--debug");
       console.log(data['attendance_assignment']);
       this.assignment = data['attendance_assignment'];
-
+      this.enable_attendance_log = this.assignment.enable_attendance_log;
       this.shift_hours_split = this.assignment.shift_hours.split("|");
       this.shift_hours_supervisor_split = this.assignment.shift_hours_supervisor.split("|");
       
@@ -571,34 +573,74 @@ export class PreviewPage implements OnInit {
 
   }
 
+  // createLogRows(obj, type) {
+    
+  //   // obj.forEach((log) =>{
+  //   //   let row = document.createElement('ion-row');
+  //   //   row.setAttribute('class','logs-content');
+  //   //   let colValue = Object.values(log);
+  //   //   let colLength = colValue.length;
+
+  //   //   for(let i =0; i<colLength; i++) {
+  //   //     if(i==2) {
+  //   //       let col = <HTMLElement>document.createElement('ion-col');
+  //   //       col.setAttribute('class','logs-col');
+  //   //       col.innerHTML = <string> colValue[0];
+  //   //       row.append(col);
+  //   //       break;
+  //   //     }
+  //   //     let col = <HTMLElement>document.createElement('ion-col');
+  //   //     col.setAttribute('class','logs-col');
+  //   //     col.innerHTML = <string> colValue[i+1];
+  //   //     row.append(col);
+
+
+  //   //   }
+
+
+  //   //   this.logCached[type].push(row);
+
+  //   // });
+
+  // }
+
+
+
   createLogRows(obj, type) {
+
     obj.forEach((log) =>{
-      let row = document.createElement('ion-row');
-      row.setAttribute('class','logs-content');
+      let el = document.createElement('div');
+      
+      let row1 = document.createElement('ion-row'); //create row  
+      row1.setAttribute('class','logs-content'); //set css
+      // insert " | "" into time date //
       let colValue = Object.values(log);
-      let colLength = colValue.length;
+      let originaltime = <string> colValue[1];
+      let timedatearr = originaltime.split(' ');
+      let timedate = timedatearr[0] + ' ' + timedatearr[1] + ' ' + timedatearr[2] + ' | ' + timedatearr[3];
+      // indicator //
+      let col0 = <HTMLElement>document.createElement('ion-col');
+      col0.setAttribute('class','logs-indicator');       
+      row1.append(col0); //create col in same row 
+      // name //
+          let col1 = <HTMLElement>document.createElement('ion-col');
+          col1.setAttribute('class','logs-col-name');       
+          col1.innerHTML = "<b>"+<string> colValue[0] +"</b>"+"<br>"+"<br>"+ timedate; // name top date bottom
+          row1.append(col1); //create col in same row 
+      // date-time //
+          let col3 = <HTMLElement>document.createElement('ion-col');
+          col3.setAttribute('class','logs-col-clock');
+          col3.innerHTML = (<string> colValue[2]);
+          row1.append(col3); //create col in same row 
 
-      for(let i =0; i<colLength; i++) {
-        if(i==2) {
-          let col = <HTMLElement>document.createElement('ion-col');
-          col.setAttribute('class','logs-col');
-          col.innerHTML = <string> colValue[0];
-          row.append(col);
-          break;
-        }
-        let col = <HTMLElement>document.createElement('ion-col');
-        col.setAttribute('class','logs-col');
-        col.innerHTML = <string> colValue[i+1];
-        row.append(col);
+          if (colValue[2] == "Clock Out")
+          {
+            col0.setAttribute('class','logs-indicator-red'); 
+          } 
 
-
-      }
-
-
-      this.logCached[type].push(row);
-
+          el.append(row1);
+          this.logCached[type].push(el);
     });
-
   }
 
   
@@ -816,7 +858,7 @@ export class PreviewPage implements OnInit {
 
   }
 
-  dismissDetailsModal(){
+  closeDetailsModal(){
     console.log('Close details modal');
     this.isDetailsOpen = false;
 

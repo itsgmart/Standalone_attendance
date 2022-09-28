@@ -6,7 +6,7 @@ ion-content {
 
 ion-icon {
   color: #111E52;
-  width:4vw;
+  width:6vw;
   height:100%;
 }
 
@@ -347,7 +347,7 @@ ion-header{
 
 .grid-container{
   width: 90%;
-  height: 97%;
+  height: 88%;
   background-color: white;
   border-radius: 10px;
   padding-top: 15px;
@@ -362,9 +362,9 @@ ion-header{
   padding: 120%,120%,120%,0%;
   //width: 100%;
   text-align: left;
-  font-size: 3vw;
+  font-size: 5vw;
   background-color: white;
-  color: black;
+  color: #202C5C;
   font-weight: bold;
   margin:3% 0px;
 }   
@@ -372,17 +372,17 @@ ion-header{
 .header2{
   padding: 4%,40%,4%,0%;
   text-align: left;
-  font-size: 2.7vw;
+  font-size: 4vw;
   font-weight: bold;
   background-color: white;
-  color: black;
+  color: #202C5C;
 }   
 
 .default{
   padding: 1%,1%,1%,0%;
   background-color: white;
-  color: black;
-  font-size: 2.7vw;
+  color: #202C5C;
+  font-size: 4vw;
   //padding-right: 15px;
   
 }
@@ -532,10 +532,10 @@ ion-segment{
 ion-segment-button {
   text-transform: none;
   color: #111E52;
-  font-size: 4vw;
+  font-size: 3.5vw;
   opacity: 1;
-  height: 100%;
-  width: auto;
+  //height: 100%;
+  //width: auto;
   border: none;
   overflow: initial;
   line-height: normal;
@@ -569,3 +569,6 @@ ion-segment-button {
     bottom: 0;
   }
 }
+
+
+

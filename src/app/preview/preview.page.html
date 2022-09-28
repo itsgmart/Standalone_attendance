@@ -64,9 +64,6 @@
             <ion-button style="--background:#E5E5E5;" (click)="openDetails()" id="details">
                 <ion-icon size="small" slot="icon-only" name="alert-circle-outline"></ion-icon>
             </ion-button>
-            <ion-button style="--background:#E5E5E5;" (click)="getCamera()">
-                <ion-icon size="small" slot="icon-only" name="camera-outline"></ion-icon>
-            </ion-button>
             <ion-button style="--background:#E5E5E5;" (click)="openLogs()" expand="block" id="logs" colour="medium">
                 <ion-icon size="small" slot="icon-only" name="list-circle-outline"></ion-icon>
             </ion-button>
@@ -117,9 +114,9 @@
           </ion-segment>
         </div>
         
-        <ion-row class="logs-header">
+        <!-- <ion-row class="logs-header">
           <ion-col>
-            Clock Time
+            Clock Time 
           </ion-col>
           <ion-col>
             Type
@@ -127,13 +124,13 @@
           <ion-col>
             Name
           </ion-col>
-        </ion-row>
+        </ion-row> -->
 
         <div id="logs-card">
           
         </div>
         
-
+<!-- For loading  -->
         <ion-infinite-scroll position="bottom" threshold="5%" (ionInfinite)="loadData($event)">
           <ion-infinite-scroll-content
             loadingSpinner="bubbles"
@@ -151,12 +148,12 @@
         <ion-col>
           <div>Local Attendance Details:</div>
         </ion-col>
-        <button ion-button (click)="dismissModal()" class="crossicon">
+        <button ion-button (click)="dismissDetailsModal()" class="crossicon">
           <ion-icon name="close-circle-outline"></ion-icon>
         </button>
       </ion-row>
       
-      <!--  -->
+      <!-- Attendance Below here  -->
       
       <ion-row>
         <ion-col class="default">

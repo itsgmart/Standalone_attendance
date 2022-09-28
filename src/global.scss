@@ -450,3 +450,47 @@ $colors: (
     right: -100%;
   }
 }
+
+
+.logs-indicator-red
+{
+  border-radius: 8px 0px 0px 8px;
+  flex: 0 0 12px;
+  background-color: #ED2D49;
+}
+
+.logs-indicator
+{
+  border-radius: 8px 0px 0px 8px;
+  flex: 0 0 12px;
+  background-color: #50AA77;
+}
+
+.logs-col-clock
+{
+  font-size: 2.2vw;
+  display: flex;
+  justify-content: right;
+  padding: 7px; //how thick it is 
+  font-weight: bold;
+}
+
+.logs-col-name{
+  font-size: 2.2vw;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+  padding: 7px; //how thick it is 
+  white-space: pre-wrap;
+}
+
+.logs-content{
+  text-align: center;
+  font-size: 2.2vw;
+  border-radius: 12px; //
+  background: #F3F7FF;
+  //border-bottom: dashed grey;
+  border-style: solid;
+  border-width: 6px;
+  border-color: white;
+}
