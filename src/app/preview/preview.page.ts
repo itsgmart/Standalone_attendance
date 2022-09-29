@@ -91,8 +91,9 @@ export class PreviewPage implements OnInit {
   firstLoad = true;
 
   enable_attendance_log:any;
+  facecheckLoader:any;
 
-  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private loader:LoadingController) {}
+  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private loader:LoadingController, private navCtrl:NavController) {}
 
   ngOnInit() {
     console.log('initialising preview page');
@@ -196,14 +197,7 @@ export class PreviewPage implements OnInit {
 
   async processImage() {
 
-    if(this.isDisplayShown()) {
-      this.warningShown = false;
-      this.hideInfoDisplay();
-      this.count = this.maxCount;
-      return;
-    }
-
-    this.showInfoDisplay();
+    // this.showInfoDisplay();
     if (this.detection == undefined) {
       if(this.modalAttendance != undefined) {
         if(this.modalAttendance.isOpen) {
@@ -211,8 +205,6 @@ export class PreviewPage implements OnInit {
           this.modalAttendance.isOpen = false;
         }
       }
-
-
 
       this.count = this.maxCount; 
       console.log("Count:",this.count);
@@ -244,10 +236,17 @@ export class PreviewPage implements OnInit {
         this.faceDetected = false;
         this.count = this.maxCount;
         this.rawImageCheck = this.rawImage;
-        console.log('stop detection');
-        // clearInterval(this.myInterval);
-        this.checkFace();
+        console.log('debug');
+        console.log(this.modalAttendance);
+        if(this.facecheckLoader == null && this.modalAttendance == null && this.isToastOpen == false) {
+          this.facecheckLoader = await this.loader.create({
+            message: 'Loading please wait..'
+          });
+          await this.facecheckLoader.present();
+          this.checkFace();
+        }
       } 
+
       this.resizedDetections = faceapi.resizeResults(
           this.detection, 
           this.displaySize
@@ -261,11 +260,6 @@ export class PreviewPage implements OnInit {
       let text = <HTMLElement> textEle[0];
       text.style.display = 'none';    
     }
-  }
-
-  isDisplayShown() {
-    let detailsCard = document.getElementById('detailsCard');
-    return (detailsCard != null);
   }
 
   showInfoDisplay(){
@@ -292,18 +286,7 @@ export class PreviewPage implements OnInit {
 
   async checkFace() {
 
-    const toast = await this.toastController.create({
-      message: 'Face detected, please wait...',
-      color: 'success',
-      position: "middle"
-    });
-    
-    if(this.modalAttendance == undefined) {
-      toast.present();
-    }
-    else if(this.modalAttendance.isOpen == false){
-      toast.present();
-    }
+
     
     this.storage.set('url', this.global.server_url).then((url) => {
       const httpOptions = {
@@ -324,43 +307,27 @@ export class PreviewPage implements OnInit {
       // url = "http://192.168.0.155";
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
-        toast.dismiss();
+        
         // check if face is in aws face collection
         if(data) {
 
           // if unable to clock in/out, show msg on toast
           // else get data to display on attendanceModal
           if(data['status'] != null) {
+            if (this.facecheckLoader != null) {
+              await this.facecheckLoader.dismiss();
+              this.facecheckLoader = null;
+            } 
             let status = data['status'];
 
             switch(status) {
               case 'Too fast':
-                if(this.modalAttendance == undefined) {
-                  if (this.isToastOpen ) 
-                    this.toast.dismiss();
                   await this.presentToast(status, "warning");
-                }
-                else if(this.modalAttendance.isOpen == false){
-                  if (this.isToastOpen) 
-                    this.toast.dismiss();
-                  await this.presentToast(status, "warning");
-                }
                 break;
               case 'not assigned to location':
-                if(this.modalAttendance == undefined) {
-                  if (this.isToastOpen ) 
-                    this.toast.dismiss();
                   await this.presentToast(status, "warning");
-                }
-                else if(this.modalAttendance.isOpen == false){
-                  if (this.isToastOpen ) 
-                    this.toast.dismiss();
-                  await this.presentToast(status, "warning");
-                }
                 break;    
             }
-
-
           } else{
             await this.clockInOut(data);    // After this start detection again
           }
@@ -406,6 +373,10 @@ export class PreviewPage implements OnInit {
           showBackdrop: true,
           backdropDismiss: false
         });
+        if (this.facecheckLoader != null) {
+          await this.facecheckLoader.dismiss();
+          this.facecheckLoader = null;
+        } 
         await modal.present();
         console.log('modal presented');
         await modal.onDidDismiss().then(data=>{
@@ -436,10 +407,15 @@ export class PreviewPage implements OnInit {
       cssClass: 'my-custom-class',
       showBackdrop: true,
     });
+    if (this.facecheckLoader != null) {
+      await this.facecheckLoader.dismiss();
+      this.facecheckLoader = null;
+    } 
     this.modalAttendance.isOpen = true;
     this.modalAttendance.present();
     console.log('modal presented');
     this.modalAttendance.onDidDismiss().then(()=> {
+      this.modalAttendance = null;
       console.log('modal onDidDismiss');
     
     });
@@ -465,8 +441,6 @@ export class PreviewPage implements OnInit {
   convertToTime(dateTime): string {
     return dateTime.split("-")[2].split(" ")[1];
   }
-
-
 
   async createLoader() {
     const loading = await this.loader.create();
@@ -572,39 +546,6 @@ export class PreviewPage implements OnInit {
     });
 
   }
-
-  // createLogRows(obj, type) {
-    
-  //   // obj.forEach((log) =>{
-  //   //   let row = document.createElement('ion-row');
-  //   //   row.setAttribute('class','logs-content');
-  //   //   let colValue = Object.values(log);
-  //   //   let colLength = colValue.length;
-
-  //   //   for(let i =0; i<colLength; i++) {
-  //   //     if(i==2) {
-  //   //       let col = <HTMLElement>document.createElement('ion-col');
-  //   //       col.setAttribute('class','logs-col');
-  //   //       col.innerHTML = <string> colValue[0];
-  //   //       row.append(col);
-  //   //       break;
-  //   //     }
-  //   //     let col = <HTMLElement>document.createElement('ion-col');
-  //   //     col.setAttribute('class','logs-col');
-  //   //     col.innerHTML = <string> colValue[i+1];
-  //   //     row.append(col);
-
-
-  //   //   }
-
-
-  //   //   this.logCached[type].push(row);
-
-  //   // });
-
-  // }
-
-
 
   createLogRows(obj, type) {
 
