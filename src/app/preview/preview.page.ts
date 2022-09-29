@@ -15,7 +15,7 @@ import { Executor } from 'selenium-webdriver';
 import { SupvOptionComponent } from '../supv-option/supv-option.component';
 import { resolve } from 'dns';
 import { ChildActivationStart } from '@angular/router';
-
+import { Router } from '@angular/router';
 
 
 
@@ -37,7 +37,7 @@ export class PreviewPage implements OnInit {
   myInterval: NodeJS.Timeout;
   width: number;
   height: number;
-  faceWarning = 'Please move closer/stay within camera';
+  faceWarning = 'Move closer';
   warningShown = false;
   storage = this.global.storage;
   rawImage: string;
@@ -50,7 +50,7 @@ export class PreviewPage implements OnInit {
   url: any;
   show_details = false;
   isSupervisor = false;
-  
+  taptap = 9 ;
 
   user:any;
   shift_in:any;
@@ -92,7 +92,7 @@ export class PreviewPage implements OnInit {
 
   enable_attendance_log:any;
 
-  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private loader:LoadingController) {}
+  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
 
   ngOnInit() {
     console.log('initialising preview page');
@@ -126,6 +126,24 @@ export class PreviewPage implements OnInit {
 
 
   }
+
+  
+  tap9times() 
+  { 
+    this.taptap--;
+    console.log(this.taptap);
+    if (this.taptap == 0)
+    {
+    let text = "Press a button!\nEither OK or Cancel.";
+    (confirm(text) == true)
+    {
+    this.router.navigateByUrl('/home')
+    console.log(this.taptap);
+    this.taptap = 0;
+    }
+    }
+}
+
 
   ionViewDidLeave() {
     console.log('closing camera');
@@ -295,7 +313,7 @@ export class PreviewPage implements OnInit {
     const toast = await this.toastController.create({
       message: 'Face detected, please wait...',
       color: 'success',
-      position: "middle"
+      position: "middle",
     });
     
     if(this.modalAttendance == undefined) {
@@ -370,12 +388,12 @@ export class PreviewPage implements OnInit {
           if(this.modalAttendance == undefined) {
             if (this.isToastOpen ) 
               this.toast.dismiss();
-            await this.presentToast("Face not found", "danger");
+            await this.presentToast("Facee not found", "danger");
           }
           else if(this.modalAttendance.isOpen == false){
             if (this.isToastOpen ) 
               this.toast.dismiss();
-            await this.presentToast("Face not found", "danger");
+            await this.presentToast("Facee not found", "danger");
           }
     
         }          
@@ -452,7 +470,7 @@ export class PreviewPage implements OnInit {
       message: msg,
       duration: 1000,
       color: color,
-      position: "middle"
+      position: "middle",
     });
     this.toast.present(); 
     this.isToastOpen = true;

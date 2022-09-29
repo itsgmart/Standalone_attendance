@@ -53,12 +53,11 @@
 
 
 
-
 <ion-header [translucent]="true">
     <ion-toolbar color="translucent">
-        <ion-title>
+        <ion-button (click)="tap9times()" class="attendance-title" style="--background:transparent" >
             Attendance
-        </ion-title>
+        </ion-button>
 
         <ion-buttons slot="primary">
             <ion-button style="--background:#E5E5E5;" (click)="openDetails()" id="details">
@@ -130,7 +129,7 @@
           
         </div>
         
-<!-- For loading  -->
+        <!-- For loading  -->
         <ion-infinite-scroll position="bottom" threshold="5%" (ionInfinite)="loadData($event)">
           <ion-infinite-scroll-content
             loadingSpinner="bubbles"
@@ -148,7 +147,7 @@
         <ion-col>
           <div>Local Attendance Details:</div>
         </ion-col>
-        <button ion-button (click)="dismissDetailsModal()" class="crossicon">
+        <button ion-button (click)="closeDetailsModal()" class="crossicon">
           <ion-icon name="close-circle-outline"></ion-icon>
         </button>
       </ion-row>
@@ -226,23 +225,33 @@
 
 
     <div id="content">
+
+
+
+      
+        <!-- Detecting face, please wait -->
         <div  *ngIf="!faceDetected" class="overlayMsg">
             <div class="overlayText" style="color:black;">
                 Detecting face, please wait...
             </div>
         </div>
+        <!-- Face detected. Keep still -->
         <div  *ngIf="faceDetected" class="overlayMsg">
             <div class="overlayText">
                 Face detected. Keep still for:
                 <p style="margin:0px ;text-align:center;"><span style="font-weight: bold; font-size:30px;">{{count}}</span> seconds.</p>
             </div>
         </div>
+        <!-- Move Closer -->
         <div *ngIf="warningShown" class="backdrop" style="display:block;">
-            <div class="overlayMsg">
-                <div class="overlayWarningText">
-                    {{faceWarning}}
-                </div>
-            </div>
+          <ion-col class="overlayMsg">
+            <ion-row class="overlayWarningTextTop">
+              Move Closer
+            </ion-row>
+            <ion-row class="overlayWarningTextBtm">
+              Please move closer to the camera.
+            </ion-row>
+          </ion-col>
         </div>
 
         

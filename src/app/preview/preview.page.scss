@@ -19,9 +19,12 @@ ion-toolbar {
   --background-color: transparent;
 }
 
-ion-title {
+.attendance-title {
   color: #111E52;
   font-size: 4vw;
+  text-align: left;
+  margin-left: 10px;
+  font-weight: bold;
 }
 
 ion-header{
@@ -58,10 +61,10 @@ ion-header{
 
 .overlayMsg{
   width:100%;
-  margin-top: 15%;
+  margin-top: 35%;
   position:absolute;
   z-index: 20;
-  color:red;
+  color:#111E52;
 
   .overlayText {
     font-size: 20px;
@@ -77,13 +80,37 @@ ion-header{
   .overlayWarningText{
     font-size: 34px;
     width: 80%;
-    background-color: #D5DAE5;
-    opacity: 0.5;
-    border-radius: 10px;
+    background-color: #F39C0F;
+    opacity: 0.9;
     margin: 0px 10%;
     padding:5px;
     text-align: center;
   }
+
+
+  .overlayWarningTextTop{
+    font-size: 34px;
+    width: 80%;
+    background-color: #F39C0F;
+    opacity: 0.98;
+    border-radius: 10px 10px 0px 0px;
+    margin: 0px 10%;
+    padding:5px;
+    padding-left: 65px; //centre text
+    text-align: center;
+  }
+
+  .overlayWarningTextBtm{
+    font-size: 34px;
+    width: 80%;
+    background-color: #FCFCFC;
+    opacity: 0.98;
+    border-radius: 0px 0px 10px 10px;
+    margin: 0px 10%;
+    padding:5px;
+    text-align: center;
+  }
+  
 }
 
 .yesBtn{
