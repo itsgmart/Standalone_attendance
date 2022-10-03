@@ -51,8 +51,18 @@
   </ion-grid>
 </div>
 
+<div *ngIf="isBlackOut"   id="blackOut" tappable (click)="resumeDetection()">
+
+  <ion-card class = "blackoutCard">
+    <ion-row>
+      Tap anywhere to resume face detection... 
+    </ion-row>
+  </ion-card>
+
+</div>
 
 
+<!-- Navbar -->
 <ion-header [translucent]="true">
     <ion-toolbar color="translucent">
         <ion-button (click)="tap9times()" class="attendance-title" style="--background:transparent" >
@@ -66,7 +76,7 @@
             <ion-button style="--background:#E5E5E5;" (click)="openLogs()" expand="block" id="logs" colour="medium">
                 <ion-icon size="small" slot="icon-only" name="list-circle-outline"></ion-icon>
             </ion-button>
-            <ion-button style="--background:#E5E5E5;" (click)="refresh()" colour="medium">
+            <ion-button style="--background:#E5E5E5;" (click)="stopPreview()" colour="medium">
                 <ion-icon size="small" slot="icon-only" name="reload-outline"></ion-icon>
             </ion-button>
         </ion-buttons>

@@ -93,6 +93,8 @@ export class PreviewPage implements OnInit {
   enable_attendance_log:any;
   facecheckLoader:any;
 
+  isBlackOut = false;
+
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
 
   ngOnInit() {
@@ -120,12 +122,6 @@ export class PreviewPage implements OnInit {
       this.shift_hours_supervisor_split = this.assignment.shift_hours_supervisor.split("|");
       
     });
-  
-
-    
-    
-
-
   }
 
   
@@ -464,8 +460,26 @@ export class PreviewPage implements OnInit {
     return loading;
   }
 
-  refresh() {
-    window.location.reload();
+  stopPreview() {
+    
+    CameraPreview.stop();
+    clearInterval(this.myInterval);
+    this.isBlackOut = true;
+
+  }
+
+  async resumeDetection(){
+    var loader = this.createLoader();
+    (await loader).present();
+    this.launchCamera();
+    await new Promise<void>((resolve)=>{
+      setTimeout(async () => {
+        (await loader).dismiss();
+        resolve();
+      }, 500);
+    });
+    this.isBlackOut = false;
+
   }
 
   /**
