@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
 export class SupvOptionComponent implements OnInit {
 
   msg = 'Do you want to clock in as User or Supervisor?';
-
+  supv:any;
 
   constructor(private modal:ModalController) { }
 
@@ -19,5 +19,20 @@ export class SupvOptionComponent implements OnInit {
     this.modal.dismiss({'role': data});
   }
 
+  cancel() {
+    console.log('cancel pressed');
+    this.modal.dismiss({'role': ''});
+  } 
+
+  submit() {
+    let selection = <HTMLInputElement>document.getElementById('supv');
+    
+    if (selection.checked) {
+      this.modal.dismiss({'role': 'supervisor'});
+    }
+    else {
+      this.modal.dismiss({'role': 'user'});
+    }
+  }
 
 }

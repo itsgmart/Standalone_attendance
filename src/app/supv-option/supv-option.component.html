@@ -1,6 +1,33 @@
 
 <ion-card class='msgCard'>
-    <ion-row class='header'>
+
+    <ion-row class="header">
+        Clock In as
+    </ion-row>
+
+    <ion-row class="card-content">
+        <ion-row>
+            <ion-col>
+                <input type="radio" id="supv" name="selection" checked>
+                <label for="supv">Supervisor</label>
+            </ion-col>
+            <ion-col>
+                <input type="radio" name="selection">
+                <label for="user">User</label>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <button ion-button (click)="submit()">Clock In</button>
+        </ion-row>
+        <ion-row>
+            <button ion-button (click)="cancel()">Cancel</button>
+        </ion-row>
+    </ion-row>
+
+
+
+
+    <!-- <ion-row class='header'>
         {{msg}}
     </ion-row>
     <ion-row style="padding:10px">
@@ -10,6 +37,6 @@
         <ion-col style="display:flex; justify-content:center;">
             <button class="btn" (click)="dismissModal('user')">User</button>
         </ion-col>
-    </ion-row>
+    </ion-row> -->
 </ion-card>
 
