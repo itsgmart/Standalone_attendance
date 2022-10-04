@@ -99,6 +99,8 @@ export class PreviewPage implements OnInit {
   warninglogtime:any;
   userNotFound: boolean;
   localUrl = "http://192.168.0.155";
+  isBlackOut = false;
+  supvOptmodal: HTMLIonModalElement;
 
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
 
@@ -276,7 +278,7 @@ export class PreviewPage implements OnInit {
         this.rawImageCheck = this.rawImage;
         console.log('debug');
         console.log(this.modalAttendance);
-        if(this.facecheckLoader == null && this.modalAttendance == null && this.isToastOpen == false) {
+        if(this.facecheckLoader == null && this.modalAttendance == null && this.isToastOpen == false && this.supvOptmodal==null) {
           this.facecheckLoader = await this.loader.create({
             message: 'Loading please wait..'
           });
@@ -337,11 +339,12 @@ export class PreviewPage implements OnInit {
       };
       const params = {
         "image" : this.rawImageCheck,
-        "location_id" : this.id
+        "location_id" : this.id,
+        'Harron_Version' : true
       };
       console.log("params:", params);
       console.log(url);
-      // url = "http://192.168.0.155";
+      url = "http://192.168.0.155";
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
         
@@ -373,7 +376,48 @@ export class PreviewPage implements OnInit {
                 break;    
             }
           } else{
-            await this.clockInOut(data);    // After this start detection again
+            console.log('testt', data['isSupv']);
+            //Check if user is a supervisor, then give supervisor the option to use to clock in as supv or user
+            if(data['isSupv']) {
+              console.log('creating modal for Supervisor Option');
+              this.supvOptmodal = await this.modalCtrl.create({
+                component: SupvOptionComponent,
+                cssClass: 'supvOptionModal',
+                showBackdrop: true,
+                backdropDismiss: false
+              });
+              if (this.facecheckLoader != null) {
+                await this.facecheckLoader.dismiss();
+                this.facecheckLoader = null;
+              } 
+              await this.supvOptmodal.present();
+              console.log('modal presented');
+              await this.supvOptmodal.onDidDismiss().then(async x=>{
+                let loader = this.createLoader();
+                (await loader).present();
+                this.supvOptmodal = null;
+                if (x['data']['role'] != undefined) {
+                  let user_type = x['data']['role'];
+
+                  let params = {
+                    "image" : this.rawImageCheck,
+                    "location_id" : this.id,
+                    'Harron_Version' : true,
+                    'user_type' : user_type
+                  }
+
+                  this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
+                    console.log('2nd api call');
+                    console.log(data);
+                    (await loader).dismiss();
+                    await this.clockInOut(data);    // After this start detection again
+                  });
+
+                }
+              });
+            }
+            else 
+              await this.clockInOut(data);    // After this start detection again
           }
         }
         else{ //user not found 
@@ -407,27 +451,27 @@ export class PreviewPage implements OnInit {
     });
     if(data['type'] == 'Clock In') {
       this.type = 'Clocked In:';
-      if(this.user_type == 'supervisor') {  
-        console.log('creating modal for Supervisor Option');
-        const modal = await this.modalCtrl.create({
-          component: SupvOptionComponent,
-          cssClass: 'supvOptionModal',
-          showBackdrop: true,
-          backdropDismiss: false
-        });
-        if (this.facecheckLoader != null) {
-          await this.facecheckLoader.dismiss();
-          this.facecheckLoader = null;
-        } 
-        await modal.present();
-        console.log('modal presented');
-        await modal.onDidDismiss().then(data=>{
+      // if(this.user_type == 'user') {  
+      //   console.log('creating modal for Supervisor Option');
+      //   const modal = await this.modalCtrl.create({
+      //     component: SupvOptionComponent,
+      //     cssClass: 'supvOptionModal',
+      //     showBackdrop: true,
+      //     backdropDismiss: false
+      //   });
+      //   if (this.facecheckLoader != null) {
+      //     await this.facecheckLoader.dismiss();
+      //     this.facecheckLoader = null;
+      //   } 
+      //   await modal.present();
+      //   console.log('modal presented');
+      //   await modal.onDidDismiss().then(data=>{
 
-          if (data['data']['role'] != undefined) {
-            this.user_type = data['data']['role'];
-          }
-        });
-      }
+      //     if (data['data']['role'] != undefined) {
+      //       this.user_type = data['data']['role'];
+      //     }
+      //   });
+      // }
 
     } else {
       this.type = 'Clocked Out:';
@@ -489,8 +533,26 @@ export class PreviewPage implements OnInit {
     return loading;
   }
 
-  refresh() {
-    window.location.reload();
+  stopPreview() {
+    
+    CameraPreview.stop();
+    clearInterval(this.myInterval);
+    this.isBlackOut = true;
+
+  }
+
+  async resumeDetection(){
+    var loader = this.createLoader();
+    (await loader).present();
+    this.launchCamera();
+    await new Promise<void>((resolve)=>{
+      setTimeout(async () => {
+        (await loader).dismiss();
+        resolve();
+      }, 500);
+    });
+    this.isBlackOut = false;
+
   }
 
   /**
