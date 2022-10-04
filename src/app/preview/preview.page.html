@@ -66,9 +66,7 @@
             <ion-button style="--background:#E5E5E5;" (click)="openLogs()" expand="block" id="logs" colour="medium">
                 <ion-icon size="small" slot="icon-only" name="list-circle-outline"></ion-icon>
             </ion-button>
-            <ion-button style="--background:#E5E5E5;" (click)="refresh()" colour="medium">
-                <ion-icon size="small" slot="icon-only" name="reload-outline"></ion-icon>
-            </ion-button>
+
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
@@ -82,9 +80,15 @@
       <ion-content>
         <div class="top"> 
           <div class = "top-1">
-            <button class="filterBtn" (click)="showFilterModal()"><img src="../../assets/icon/filter.svg">Filter</button>
-      
-            <button class="iconBtn" (click)="closeLogModal()"><ion-icon name="close-circle-outline"></ion-icon></button>
+            <!-- Filter Button -->
+            <button class="filterBtn" (click)="showFilterModal()"><img src="../../assets/icon/Vector.svg">Filter</button>
+            <!-- Refresh Button -->
+            <button class="filterBtn" style="margin-right: 40%;" (click)="getLogs()">
+              <img src="../../assets/icon/Refresh2.svg">Refresh</button>
+              <!-- Close Button -->
+            <button class="iconBtn" style="justify-content: flex-end;" (click)="closeLogModal()">
+              <ion-icon name="close-circle-outline" ></ion-icon></button>
+            
           </div>
       
           <div class="top-header">
@@ -113,17 +117,6 @@
           </ion-segment>
         </div>
         
-        <!-- <ion-row class="logs-header">
-          <ion-col>
-            Clock Time 
-          </ion-col>
-          <ion-col>
-            Type
-          </ion-col>
-          <ion-col>
-            Name
-          </ion-col>
-        </ion-row> -->
 
         <div id="logs-card">
           
@@ -149,6 +142,9 @@
         </ion-col>
         <button ion-button (click)="closeDetailsModal()" class="crossicon">
           <ion-icon name="close-circle-outline"></ion-icon>
+        </button>
+        <button ion-button (click)="getLogs()" class="crossicon">
+          <ion-icon name="refresh"></ion-icon>
         </button>
       </ion-row>
       
@@ -230,26 +226,46 @@
 
       
         <!-- Detecting face, please wait -->
-        <div  *ngIf="!faceDetected" class="overlayMsg">
+        <div  *ngIf="!faceDetected" class="overlayMsg" style="margin-top: 5%;">
             <div class="overlayText" style="color:black;">
                 Detecting face, please wait...
-            </div>
+                <!-- <ion-row><p><ion-icon size="large" name="person-outline"></ion-icon></p></ion-row> -->
+              </div>
         </div>
+
         <!-- Face detected. Keep still -->
-        <div  *ngIf="faceDetected" class="overlayMsg">
+        <div  *ngIf="faceDetected" class="overlayMsg" style="margin-top: 5%;">
             <div class="overlayText">
                 Face detected. Keep still for:
                 <p style="margin:0px ;text-align:center;"><span style="font-weight: bold; font-size:30px;">{{count}}</span> seconds.</p>
+                <!-- <ion-row><p><ion-icon name="refresh"></ion-icon></p></ion-row> -->
             </div>
         </div>
+        
         <!-- Move Closer -->
         <div *ngIf="warningShown" class="backdrop" style="display:block;">
           <ion-col class="overlayMsg">
             <ion-row class="overlayWarningTextTop">
-              Move Closer
+              <ion-row><ion-icon name="warning-outline"></ion-icon>&nbsp;</ion-row>
+              {{warningHeader}}
             </ion-row>
             <ion-row class="overlayWarningTextBtm">
-              Please move closer to the camera.
+              {{warningMsg}}
+              <!-- {{warninglogtime}} -->
+            </ion-row>
+          </ion-col>
+        </div>
+
+        <!-- User not found -->
+        <div *ngIf="userNotFound" class="backdrop" style="display:block;">
+          <ion-col class="overlayMsg">
+            <ion-row class="overlayWarningTextTop">
+              <ion-row><ion-icon name="person-add-outline"></ion-icon>&nbsp;</ion-row>
+              {{warningHeader}}
+            </ion-row>
+            <ion-row class="overlayWarningTextBtm" style="padding-left: 58px;">
+              {{warningMsg}} 
+              <!-- please try again -->
             </ion-row>
           </ion-col>
         </div>

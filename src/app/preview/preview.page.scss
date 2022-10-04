@@ -65,9 +65,11 @@ ion-header{
   position:absolute;
   z-index: 20;
   color:#111E52;
+  padding-left: 35px; //centre text
 
   .overlayText {
     font-size: 20px;
+    //margin-top: 5%;
     width: 80%;
     background-color: #D5DAE5;
     opacity: 0.5;
@@ -78,36 +80,41 @@ ion-header{
   }
 
   .overlayWarningText{
-    font-size: 34px;
+    font-size: 23px;
     width: 80%;
     background-color: #F39C0F;
     opacity: 0.9;
     margin: 0px 10%;
-    padding:5px;
+    padding: 20px;
+        padding-left: 75px; //centre text
+
     text-align: center;
   }
 
 
   .overlayWarningTextTop{
-    font-size: 34px;
+    font-family: 'DM Sans'; //figma requirement
+    font-size: 24px; //figma requirement
+    padding: 8px; //figma requirement
     width: 80%;
     background-color: #F39C0F;
     opacity: 0.98;
     border-radius: 10px 10px 0px 0px;
     margin: 0px 10%;
-    padding:5px;
-    padding-left: 65px; //centre text
+    
+    padding-left: 67px; //centre text
     text-align: center;
   }
 
   .overlayWarningTextBtm{
-    font-size: 34px;
+    font-family: 'DM Sans'; //figma requirement
+    font-size: 24px; //figma requirement
+    padding: 20px; 
     width: 80%;
     background-color: #FCFCFC;
     opacity: 0.98;
     border-radius: 0px 0px 10px 10px;
     margin: 0px 10%;
-    padding:5px;
     text-align: center;
   }
   
@@ -136,42 +143,43 @@ ion-header{
 }
 
 
-.card-container{
+
+
+.card-container
+{
   width: 90%;
   height: 97%;
-  background-color: white;
+  background-color: #FCFCFC;
   border-radius: 10px;
   padding-top: 15px;
   margin: 3% 5%;
   position: absolute;
   overflow: scroll;
   z-index: 21;
-
   .top{
     height: 40vw;
-
     .top-1{
         display: flex;
         justify-content: space-between;
         padding: 10px;
-
         .filterBtn{
-          color: black;
-          background-color: #E56420;
-          width: 43%;
-          height: 11vw;
-          font-size: 5vw;
+          font-family: 'DM Sans';
+          font-style: normal;
+          color: #FF6C27;
+          background-color: #FFFFFF;
+          border: 1px solid #E5E5E5;
+          //border-color: #999999;
+          width: 20%;
+          height: 7vw;
+          font-size: 3vw;
           border-radius: 5px;
-
+          box-shadow: 0px 2px 30px rgba(0, 0, 0, 0.1);
           img {
-            width: 16%;
+            width: 26%;
             padding-right: 4%;
           }
-
         }
-
     }
-
     .top-header {
       height: 21%;
       font-size: 4vw;
@@ -179,9 +187,6 @@ ion-header{
       font-weight: bold;
     }
   }
-
-
-
 }
 
 .modal-backdrop{

@@ -93,6 +93,13 @@ export class PreviewPage implements OnInit {
   enable_attendance_log:any;
   facecheckLoader:any;
 
+
+  warningHeader:any;
+  warningMsg:any;
+  warninglogtime:any;
+  userNotFound: boolean;
+  localUrl = "http://192.168.0.155";
+
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
 
   ngOnInit() {
@@ -120,30 +127,38 @@ export class PreviewPage implements OnInit {
       this.shift_hours_supervisor_split = this.assignment.shift_hours_supervisor.split("|");
       
     });
-  
-
-    
-    
-
-
   }
 
-  
+
   tap9times() 
   { 
-    this.taptap--;
-    console.log(this.taptap);
-    if (this.taptap == 0)
+    this.taptap = this.taptap - 1;
+
+    if (this.taptap > 0)
     {
-    let text = "Press a button!\nEither OK or Cancel.";
-    (confirm(text) == true)
-    {
-    this.router.navigateByUrl('/home')
-    console.log(this.taptap);
-    this.taptap = 0;
+      setTimeout(()=>{
+        this.taptap = 9;
+        console.log(this.taptap);
+        return;
+      }, 60000);
+      console.log(this.taptap);
     }
-    }
+
+
+      if (this.taptap == 0)
+      {
+        this.taptap = 9;
+        let text = "Press a button!\nEither OK or Cancel.";
+        if (confirm(text) == true)
+          {
+            this.router.navigateByUrl('/home')
+            console.log(this.taptap);
+            
+          }
+      }
+
 }
+
 
 
   ionViewDidLeave() {
@@ -225,30 +240,35 @@ export class PreviewPage implements OnInit {
       }
 
       this.count = this.maxCount; 
-      console.log("Count:",this.count);
+      console.log("Count1:",this.count);
       this.faceDetected = false;
       this.warningShown = false;
     } 
-    else {  // Face is detected
+    else {  // Faace is detected
       let detect_width = this.detection.box.width;
       let detect_height = this.detection.box.height;
 
-      // check if face is big enough, else show msg
+      // check if faace is big enough, else show msg
       if (this.isBigEnough(detect_width, detect_height))  {   
         console.log('face is big enough');
-        this.faceDetected = true;
-        this.warningShown = false;
+        this.faceDetected = true;  //face detected 
+        this.warningShown = false; //hide move closer warning
         this.count -= 1; 
       }
       else {
+        // Move Closer 
         console.log('face too far away');      
         this.hideInfoDisplay();
         this.warningShown = true;
+        this.warningHeader = 'Move Closer';
+        this.warningMsg = 'Please move closer to the camera'
         this.count = this.maxCount;
+        // this.timeout(2000); //warning stay for  2 seconds
+        // this.warningShown = false;
       }
 
       // if count reach 0, take picture and check face, and stop detection
-      console.log("Count:",this.count); 
+      console.log("Count2:",this.count); 
       if (this.count == 0) {  
         console.log("Take picture"); 
         this.faceDetected = false;
@@ -336,34 +356,39 @@ export class PreviewPage implements OnInit {
               this.facecheckLoader = null;
             } 
             let status = data['status'];
-
-            switch(status) {
+            let scanwait = data['time_diff'];
+            switch(status) 
+            {
               case 'Too fast':
-                  await this.presentToast(status, "warning");
+                  this.warningShown = true;
+                  this.warningHeader = 'Scan Error';
+                  this.warningMsg = scanwait + 'Scanning allowed after Please try again later' + scanwait;
+                  this.warninglogtime = scanwait;
                 break;
+
               case 'not assigned to location':
-                  await this.presentToast(status, "warning");
+                  this.warningShown = true;
+                  this.warningHeader = 'User not assigned to location';
+                  this.warningMsg = 'Please ensure that you are scanning the correct location';
                 break;    
             }
           } else{
             await this.clockInOut(data);    // After this start detection again
           }
         }
-        else{
+        else{ //user not found 
 
-          if(this.modalAttendance == undefined) {
-            if (this.isToastOpen ) 
-              this.toast.dismiss();
-            await this.presentToast("Facee not found", "danger");
-          }
-          else if(this.modalAttendance.isOpen == false){
-            if (this.isToastOpen ) 
-              this.toast.dismiss();
-            await this.presentToast("Facee not found", "danger");
-          }
-    
+          if (this.facecheckLoader != null) { //loading screen
+            await this.facecheckLoader.dismiss();
+            this.facecheckLoader = null;
+          } 
+          this.userNotFound = true;
+          this.warningHeader = 'User Not Found';
+          this.warningMsg = 'Please try again';
+          this.timeout(2000).then(()=>{
+            this.userNotFound = false;
+          });
         }          
-
       });
     });
   }
@@ -478,14 +503,7 @@ export class PreviewPage implements OnInit {
     this.content.setAttribute('style','--overflow:hidden');
     this.content.scrollToTop(0);
     // let el = this.
-
-
     await this.getLogs(false, undefined);
-
-    
-
-
-
   }
   
   getLogs(isFiltered, scrollEvent) {
@@ -525,7 +543,7 @@ export class PreviewPage implements OnInit {
         console.log("debug");
         console.log(params);
   
-        url = "http://192.168.0.155";
+        url = this.localUrl;
         this.http.post(url + '/api/attendance/getLogsV3', params, httpOptions).subscribe(async data => {
           
           
@@ -689,7 +707,7 @@ export class PreviewPage implements OnInit {
       const params = {
         "attendance_id" : this.id,
       };
-      url = "http://192.168.0.155"; 
+      url = this.localUrl; 
       this.http.post(url + '/api/attendance/getAttendanceAssignmentUsers', params, httpOptions).subscribe(async data => {
         this.allUsers = data['users'];
         this.userLoaded = true;
@@ -821,6 +839,15 @@ export class PreviewPage implements OnInit {
     this.isDetailsOpen = false;
 
     this.startDetection();
+  }
+
+
+  timeout(time) {
+    return new Promise<void>((resolve)=>{
+      setTimeout(() => {
+        resolve();
+      }, time);
+    });
   }
 
 
