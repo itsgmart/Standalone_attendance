@@ -95,7 +95,7 @@
             <!-- Filter Button -->
             <button class="filterBtn" (click)="showFilterModal()"><img src="../../assets/icon/Vector.svg">Filter</button>
             <!-- Refresh Button -->
-            <button class="filterBtn" style="margin-right: 40%;" (click)="getLogs()">
+            <button class="filterBtn" style="margin-right: 40%;" (click)="getLogs(false, undefined)">
               <img src="../../assets/icon/Refresh2.svg">Refresh</button>
               <!-- Close Button -->
             <button class="iconBtn" style="justify-content: flex-end;" (click)="closeLogModal()">
@@ -254,8 +254,24 @@
             </div>
         </div>
         
+
+        <!-- Too Fast -->
+        <div *ngIf="warningShown" class="backdrop" style="display:block; z-index: 2;">
+          <ion-col class="overlayMsg">
+            <ion-row class="overlayWarningTextTop">
+              <ion-row><ion-icon name="warning-outline"></ion-icon>&nbsp;</ion-row>
+              {{toofastHeader}}
+            </ion-row>
+            <ion-row class="overlayWarningTextBtm">
+              {{toofastMsg}}
+              <!-- {{warninglogtime}} -->
+            </ion-row>
+          </ion-col>
+        </div>
+
+
         <!-- Move Closer -->
-        <div *ngIf="warningShown" class="backdrop" style="display:block;">
+        <div *ngIf="warningShown" class="backdrop" style="display:block; z-index: 1;">
           <ion-col class="overlayMsg">
             <ion-row class="overlayWarningTextTop">
               <ion-row><ion-icon name="warning-outline"></ion-icon>&nbsp;</ion-row>
@@ -267,6 +283,10 @@
             </ion-row>
           </ion-col>
         </div>
+
+
+
+
 
         <!-- User not found -->
         <div *ngIf="userNotFound" class="backdrop" style="display:block;">

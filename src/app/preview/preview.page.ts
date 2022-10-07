@@ -39,6 +39,7 @@ export class PreviewPage implements OnInit {
   height: number;
   faceWarning = 'Move closer';
   warningShown = false;
+  tooFast = true;
   storage = this.global.storage;
   rawImage: string;
   id: any;
@@ -96,7 +97,8 @@ export class PreviewPage implements OnInit {
 
   warningHeader:any;
   warningMsg:any;
-  warninglogtime:any;
+  toofastHeader:any;
+  toofastMsg:any;
   userNotFound: boolean;
   localUrl = "http://192.168.0.155";
   isBlackOut = false;
@@ -112,11 +114,26 @@ export class PreviewPage implements OnInit {
 
   async ionViewDidEnter() {
     console.log('entering preview page');
-    await new Promise<void>((resolve)=>{
-      setTimeout(()=>{
-        resolve();
-      },100);
-    });
+
+
+    // this.supvOptmodal = await this.modalCtrl.create({
+    //   component: SupvOptionComponent,
+    //   cssClass: 'supvOptionModal',
+    //   showBackdrop: true,
+    //   backdropDismiss: false
+    // });
+    // if (this.facecheckLoader != null) {
+    //   await this.facecheckLoader.dismiss();
+    //   this.facecheckLoader = null;
+    // } 
+    // await this.supvOptmodal.present();
+    // console.log('modal presented');
+
+    // await new Promise<void>((resolve)=>{
+    //   setTimeout(()=>{
+    //     resolve();
+    //   },100);
+    // });
 
     this.launchCamera();
     this.content = document.getElementById('contentPage');
@@ -149,6 +166,16 @@ export class PreviewPage implements OnInit {
 
       if (this.taptap == 0)
       {
+        this.modalCtrl.create({
+          component: SupvOptionComponent,
+          cssClass: 'supvOptionModal',
+          showBackdrop: true,
+          backdropDismiss: false
+        });
+        if (this.facecheckLoader != null) {
+           this.facecheckLoader.dismiss();
+          this.facecheckLoader = null;
+        }
         this.taptap = 9;
         let text = "Press a button!\nEither OK or Cancel.";
         if (confirm(text) == true)
@@ -156,12 +183,11 @@ export class PreviewPage implements OnInit {
             this.router.navigateByUrl('/home')
             console.log(this.taptap);
             
+            
           }
       }
 
 }
-
-
 
   ionViewDidLeave() {
     console.log('closing camera');
@@ -244,7 +270,7 @@ export class PreviewPage implements OnInit {
       this.count = this.maxCount; 
       console.log("Count1:",this.count);
       this.faceDetected = false;
-      this.warningShown = false;
+      //this.warningShown = false;
     } 
     else {  // Faace is detected
       let detect_width = this.detection.box.width;
@@ -260,11 +286,12 @@ export class PreviewPage implements OnInit {
       else {
         // Move Closer 
         console.log('face too far away');      
-        this.hideInfoDisplay();
+        //this.hideInfoDisplay();
         this.warningShown = true;
         this.warningHeader = 'Move Closer';
         this.warningMsg = 'Please move closer to the camera'
         this.count = this.maxCount;
+        this.tooFast = true;
         // this.timeout(2000); //warning stay for  2 seconds
         // this.warningShown = false;
       }
@@ -278,7 +305,8 @@ export class PreviewPage implements OnInit {
         this.rawImageCheck = this.rawImage;
         console.log('debug');
         console.log(this.modalAttendance);
-        if(this.facecheckLoader == null && this.modalAttendance == null && this.isToastOpen == false && this.supvOptmodal==null) {
+        if(this.facecheckLoader == null && this.modalAttendance == null && this.isToastOpen == false && this.supvOptmodal==null) 
+        {
           this.facecheckLoader = await this.loader.create({
             message: 'Loading please wait..'
           });
@@ -364,9 +392,12 @@ export class PreviewPage implements OnInit {
             {
               case 'Too fast':
                   this.warningShown = true;
-                  this.warningHeader = 'Scan Error';
-                  this.warningMsg = scanwait + 'Scanning allowed after Please try again later' + scanwait;
-                  this.warninglogtime = scanwait;
+                  this.toofastHeader = 'Scan Error';
+                  this.toofastMsg = `Scanning allowed after ${scanwait} seconds. Please try again later` ;
+                  this.timeout(10000).then(()=>{
+                    this.tooFast = false;
+                  });
+                  console.log(scanwait);
                 break;
 
               case 'not assigned to location':
@@ -545,6 +576,20 @@ export class PreviewPage implements OnInit {
     var loader = this.createLoader();
     (await loader).present();
     this.launchCamera();
+
+this.supvOptmodal = await this.modalCtrl.create({
+                component: SupvOptionComponent,
+                cssClass: 'supvOptionModal',
+                showBackdrop: true,
+                backdropDismiss: false
+              });
+              if (this.facecheckLoader != null) {
+                await this.facecheckLoader.dismiss();
+                this.facecheckLoader = null;
+              } 
+              await this.supvOptmodal.present();
+              console.log('modal presented');
+
     await new Promise<void>((resolve)=>{
       setTimeout(async () => {
         (await loader).dismiss();
@@ -856,7 +901,6 @@ export class PreviewPage implements OnInit {
     this.getLogs(this.isFiltered(), event);
   }
 
-
   /**
    * Details modal functions
    */
@@ -872,7 +916,6 @@ export class PreviewPage implements OnInit {
       }, 100);
     });
 
-
     let el = document.getElementById('ShiftTimeEmployee');
     el.innerHTML='';
     this.shift_hours_split.forEach((value)=> 
@@ -882,7 +925,6 @@ export class PreviewPage implements OnInit {
       el.append(row);
     });
     
-    
     let el1 = document.getElementById('ShiftTimeSupervisor');
     el1.innerHTML='';
     this.shift_hours_supervisor_split.forEach((value)=> 
@@ -891,9 +933,6 @@ export class PreviewPage implements OnInit {
       row.innerHTML = value + "hrs";
       el1.append(row);
     });
-
-
-
   }
 
   closeDetailsModal(){
@@ -903,7 +942,6 @@ export class PreviewPage implements OnInit {
     this.startDetection();
   }
 
-
   timeout(time) {
     return new Promise<void>((resolve)=>{
       setTimeout(() => {
@@ -911,8 +949,5 @@ export class PreviewPage implements OnInit {
       }, time);
     });
   }
-
-
-
 
 }
