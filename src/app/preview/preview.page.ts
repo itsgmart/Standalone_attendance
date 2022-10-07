@@ -116,24 +116,24 @@ export class PreviewPage implements OnInit {
     console.log('entering preview page');
 
 
-    // this.supvOptmodal = await this.modalCtrl.create({
-    //   component: SupvOptionComponent,
-    //   cssClass: 'supvOptionModal',
-    //   showBackdrop: true,
-    //   backdropDismiss: false
-    // });
-    // if (this.facecheckLoader != null) {
-    //   await this.facecheckLoader.dismiss();
-    //   this.facecheckLoader = null;
-    // } 
-    // await this.supvOptmodal.present();
-    // console.log('modal presented');
+    this.supvOptmodal = await this.modalCtrl.create({
+      component: SupvOptionComponent,
+      cssClass: 'supvOptionModal',
+      showBackdrop: true,
+      backdropDismiss: false
+    });
+    if (this.facecheckLoader != null) {
+      await this.facecheckLoader.dismiss();
+      this.facecheckLoader = null;
+    } 
+    await this.supvOptmodal.present();
+    console.log('modal presented');
 
-    // await new Promise<void>((resolve)=>{
-    //   setTimeout(()=>{
-    //     resolve();
-    //   },100);
-    // });
+    await new Promise<void>((resolve)=>{
+      setTimeout(()=>{
+        resolve();
+      },100);
+    });
 
     this.launchCamera();
     this.content = document.getElementById('contentPage');

@@ -1,4 +1,3 @@
-
 .background
 {
   background-color: #FFFFFF; 
@@ -7,6 +6,8 @@
   width: 90.4%;
   margin-left: 5%;
   margin-bottom: -56%;
+  padding-top: 3%;
+  border-radius: 0% 0% 4% 4%;
 }
 
 .clockinas
@@ -134,7 +135,7 @@ border-color: red;
         &:before {
             content: '';
             position: absolute;
-            left: 0;
+            left: 10;
             bottom: 0;
             border-bottom: $border-bottom-input;
             width: 30%;
@@ -164,10 +165,6 @@ border-color: red;
         }
     }
 
-
-
-
-
     .inner-label2 {
       position: relative;
       display: inline-block;
@@ -183,8 +180,6 @@ border-color: red;
           transition: $border-bottom-transition;
       }
   }
-
-
 
 
 
@@ -212,74 +207,3 @@ border-color: red;
 
 
 }
-
-
-// .radio-label2 {
-//   //position: relative;
-//   //display: inline-block;
-//   //margin: 10px;
-//   padding: 8% 26% 9% 11%;
-//   background: #FCFCFC;
-//   font-style: DM Sans;
-//   color: #111E52;
-//   width: 83%;
-//   border: 1px solid #DEE8FE;
-
-//   //border: 1px solid #
-
-//   button
-//   {
-//     background: #00B389;
-//   }
-
-
-//   @media (max-width: 48em) {
-//       display: block;
-//       //margin: 10px 0;
-//   }
-
-//   input {
-//       opacity: 0;
-//       position: absolute;
-//   }
-
-//   .inner-label {
-//       position: relative;
-//       display: inline-block;
-//       padding-left: 10%;
-
-//       &:before {
-//           content: '';
-//           position: absolute;
-//           left: 0;
-//           bottom: 0;
-//           border-bottom: $border-bottom-input;
-//           width: 30%;
-//           transition: $border-bottom-transition;
-//       }
-//   }
-
-//   input:focus ~ .inner-label {
-//       &:before {
-//           border-bottom: $border-bottom-input-focus;
-//       }
-//   }
-
-//   input:checked ~ .inner-label 
-//   {
-//       &:after {
-//           content: '\2713';
-//           color: #fff;
-//           position: absolute;
-//           font-size: 2vh;
-//           left: -10%;
-//           top: 1px;
-//           background: #2954FF;
-//           border-radius: 60%;
-//           width: 20%;
-
-//       }
-//   }
-
-
-// }
