@@ -612,6 +612,25 @@ this.supvOptmodal = await this.modalCtrl.create({
     // let el = this.
     await this.getLogs(false, undefined);
   }
+
+  refresh() {
+    console.log('refreshing');
+    let isFiltered = false;
+    let logDiv = document.getElementById('logs-card');
+    logDiv.innerHTML = '';
+    this.logCached = {
+      All: [],
+      Clock_In: [],
+      Clock_Out: []
+    }
+    this.clkinOffset = 0;
+    this.clkoutOffset = 0;
+    this.firstLoad = true;
+    if (this.selectedName != 'All') {
+      isFiltered = true;
+    }
+    this.getLogs(isFiltered, undefined);
+  }
   
   getLogs(isFiltered, scrollEvent) {
     return new Promise<void>(async (resolve) =>{
