@@ -39,7 +39,8 @@ export class PreviewPage implements OnInit {
   height: number;
   faceWarning = 'Move closer';
   warningShown = false;
-  tooFast = true;
+  toofastShown = false;
+  tooFast = false;
   storage = this.global.storage;
   rawImage: string;
   id: any;
@@ -135,6 +136,8 @@ export class PreviewPage implements OnInit {
     //   },100);
     // });
 
+    
+
     this.launchCamera();
     this.content = document.getElementById('contentPage');
     this.storage.get('attendance_assignment').then((data)=>{
@@ -180,6 +183,7 @@ export class PreviewPage implements OnInit {
         let text = "Press a button!\nEither OK or Cancel.";
         if (confirm(text) == true)
           {
+            this.storage.clear();
             this.router.navigateByUrl('/home')
             console.log(this.taptap);
             
@@ -288,10 +292,10 @@ export class PreviewPage implements OnInit {
         console.log('face too far away');      
         //this.hideInfoDisplay();
         this.warningShown = true;
+        this.tooFast = false;
         this.warningHeader = 'Move Closer';
         this.warningMsg = 'Please move closer to the camera'
         this.count = this.maxCount;
-        this.tooFast = true;
         // this.timeout(2000); //warning stay for  2 seconds
         // this.warningShown = false;
       }
@@ -391,12 +395,13 @@ export class PreviewPage implements OnInit {
             switch(status) 
             {
               case 'Too fast':
-                  this.warningShown = true;
+                  this.tooFast = true;
+                  this.warningShown = false;
                   this.toofastHeader = 'Scan Error';
                   this.toofastMsg = `Scanning allowed after ${scanwait} seconds. Please try again later` ;
-                  this.timeout(10000).then(()=>{
-                    this.tooFast = false;
-                  });
+                  // this.timeout(10000).then(()=>{
+                  //   this.tooFast = false;
+                  // });
                   console.log(scanwait);
                 break;
 
@@ -427,7 +432,8 @@ export class PreviewPage implements OnInit {
                 let loader = this.createLoader();
                 (await loader).present();
                 this.supvOptmodal = null;
-                if (x['data']['role'] != undefined) {
+                if (x['data']['role'] != undefined) 
+                {
                   let user_type = x['data']['role'];
 
                   let params = {
@@ -443,7 +449,6 @@ export class PreviewPage implements OnInit {
                     (await loader).dismiss();
                     await this.clockInOut(data);    // After this start detection again
                   });
-
                 }
               });
             }
@@ -594,7 +599,7 @@ this.supvOptmodal = await this.modalCtrl.create({
       setTimeout(async () => {
         (await loader).dismiss();
         resolve();
-      }, 500);
+      }, 5000);
     });
     this.isBlackOut = false;
 
