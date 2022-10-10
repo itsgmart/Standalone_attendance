@@ -113,6 +113,7 @@
           ion-item {
             background-color: #FFFFFF;
 
+            ion-item::part(native){
             .item-inner {
               .input-wrapper {
                 .label {
@@ -121,6 +122,7 @@
                   color: $black;
                   margin: 0 0 3px;
                   line-height: 20px;
+                  //display: block;
                 }
 
                 ion-input {
@@ -142,6 +144,7 @@
                   color: $black-2;
                 }
               }
+            }
             }
           }
 
@@ -177,50 +180,6 @@
   }
 }
 
-.server-loc-fab {
-  right: 15px !important;
-  top: 25%;
-
-  .fab {
-    border-radius: 34px;
-    padding: 0;
-    background-color: $black-4;
-    box-shadow: none;
-    width: 120px;
-    height: 26px;
-
-    .item {
-      background-color: inherit;
-      color: $white;
-
-      .item-inner > .input-wrapper {
-        justify-content: center;
-
-        .label {
-          display: none;
-        }
-
-        .select {
-          padding: 0;
-          max-width: 100%;
-          align-items: center;
-
-          .select-icon {
-            display: none;
-          }
-
-          .select-text {
-            text-align: center;
-            overflow: visible;
-            font-weight: 500;
-            line-height: 18px;
-            letter-spacing: 0.07em;
-          }
-        }
-      }
-    }
-  }
-}
 
 .serverLocationModal {
   align-items: flex-end;
@@ -414,10 +373,10 @@
   align-items: flex-end;
 
   .server-loc-fab {
-    position: relative;
-    left: 15px !important;
+    //position: relative;
+    //left: 15px !important;
     z-index: 5;
-    top: -5%;
+    //top: -5%;
 
     button {
       border-radius: 34px;
@@ -426,7 +385,7 @@
       box-shadow: none;
       width: 120px;
       height: 40px;
-
+      min-width: 90%;
       ion-item {
         background-color: inherit;
         color: $white;
@@ -567,9 +526,9 @@
 
       .submit-btn {
         margin: 0;
-        padding: 16px 74px;
-        height: 53px;
-        width: 232px;
+        padding: 4% 25%;
+        height: 30%;
+        width: 74%;
         font-weight: bold;
         letter-spacing: 2.94px;
         line-height: 20px;
@@ -609,3 +568,39 @@
 }
 
 
+.locandpw
+{
+  margin-right: 12%;
+  margin-left: 12%;
+  margin-bottom: 4%;
+  font-family: 'DM Sans';
+  font-style: normal;
+font-weight: 500;
+font-size: 16px;
+}
+
+.servercss
+{
+  border-radius: 100px;
+  margin-left: 20%;
+  margin-bottom: 15%;
+  
+}
+
+.serverfont
+{
+
+  font-size: 80%;
+}
+
+.serverliststyle
+{
+  margin: -16%;
+}
+
+.serverselect
+{
+
+  border-radius: 33%;
+
+}

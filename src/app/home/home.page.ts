@@ -3,7 +3,7 @@ import { Globalization } from '@awesome-cordova-plugins/globalization/ngx';
 import {GlobalProviderService} from '../services/global-provider.service';
 import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Console } from 'console';
-import { ToastController, NavController } from '@ionic/angular';
+import { ToastController, NavController, LoadingController } from '@ionic/angular';
 import { ClientRequest } from 'http';
 import { runInThisContext } from 'vm';
 
@@ -18,7 +18,7 @@ export class HomePage {
   log = {};
   selectOptions:any;
   
-  constructor(private globalization: Globalization, public global: GlobalProviderService, public http: HttpClient, public toastController: ToastController, private navCtrl : NavController) {
+  constructor(private globalization: Globalization, public global: GlobalProviderService, public http: HttpClient, public toastController: ToastController, private navCtrl : NavController, private loader:LoadingController) {
   }
 
 
@@ -33,11 +33,9 @@ export class HomePage {
       header: 'Select Server',
     };
 
-    this.storage.set('login_status', false);
     this.storage.set('user','');
-    this.storage.set('attendance_assignment', '');
+    // this.storage.set('attendance_assignment', '');
     this.storage.set('isDeviceIos', this.isDeviceIos());
-
     this.storage.get('url').then(data => {
 
       if (!data) {
@@ -61,8 +59,62 @@ export class HomePage {
         }
       }
     });
+    this.checkPrevLogin();
+
+  }
 
 
+  async checkPrevLogin() {
+    let loader = await this.loader.create({
+      message: 'Loading please wait..'
+    });
+    await loader.present();
+
+
+    this.storage.get('attendance_assignment').then(async data=>{
+
+      if(data) {
+        let last_login;
+        this.storage.get('last_login_date').then(x => {
+          last_login = x;
+
+          this.storage.set('url', this.global.server_url).then((url) => {
+            if (this.log['server_location'] == "SG-1") {
+              url = "https://www.simpple.app";
+            } else if (this.log['server_location'] == "SG-2") {
+              url = "https://sg.simpple.app";
+            } else if (this.log['server_location'] == "Canada") {
+              url = "https://ca.simpple.app";
+            }
+      
+            this.storage.set('url', url).then((url) => {
+              const httpOptions = {
+                headers: new HttpHeaders({
+                  'Content-Type': 'application/json',
+                  'Authorization': 'my-auth-token',
+                  'Access-Control-Allow-Origin': '*'
+                })
+              }
+      
+              let params = {
+                'assignment_id' : data['attendance_assignment']['id'],
+                'last_login_date' : last_login
+              }
+            
+              url= 'http://192.168.0.154';
+              this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
+                await loader.dismiss();
+                if (data == false) {
+                  this.navCtrl.navigateRoot('preview');
+                }
+              });
+            });
+          });
+        });
+      }
+      else
+        await loader.dismiss();
+    });
   }
 
   login() {
@@ -87,10 +139,10 @@ export class HomePage {
           if (data == false) {
             this.presentToast("Wrong Credentials", "warning", false);
           } else {
-            console.log(data);
+            let dateTime = new Date;
             this.storage.set('attendance_assignment', data);
+            this.storage.set('last_login_date', dateTime.toLocaleString());
             this.storage.set('login_status', true);
-            // this.storage.set('attendance_assignment_id', data['attendance_assignment']['id']);
             this.presentToast("Login Successfully", "success", true);
           }
         });
