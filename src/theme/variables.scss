@@ -1,6 +1,8 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+@import "../global.scss";
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
@@ -29,7 +31,7 @@
   --ion-color-tertiary-tint: #6370ff;
 
   /** success **/
-  --ion-color-success: #2dd36f;
+  --ion-color-success: #00B389;
   --ion-color-success-rgb: 45, 211, 111;
   --ion-color-success-contrast: #ffffff;
   --ion-color-success-contrast-rgb: 255, 255, 255;
@@ -45,7 +47,7 @@
   --ion-color-warning-tint: #ffca22;
 
   /** danger **/
-  --ion-color-danger: #eb445a;
+  --ion-color-danger: #FF0000;
   --ion-color-danger-rgb: 235, 68, 90;
   --ion-color-danger-contrast: #ffffff;
   --ion-color-danger-contrast-rgb: 255, 255, 255;
@@ -75,6 +77,178 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  .serverLocationModal {
+    align-items: flex-end;
+    padding: 0 0 12px;
+    border-radius:10px;
+    .alert-wrapper {
+      background-color: transparent;
+      border-radius: 11px !important;
+      max-width: 90%;
+      max-height: 90%;
+      width: 90%;
+      box-shadow: none;
+  
+      .alert-head {
+        background-color: $white;
+        padding: 12px 32px;
+  
+        .alert-title {
+          font-weight: 500;
+          font-size: $font-size-base;
+          line-height: 18px;
+          letter-spacing: 0.07em;
+          color: $black-4;
+          margin: 0;
+          text-align: start;
+        }
+      }
+  
+      .alert-message {
+        padding:0;
+      }
+  
+      .alert-radio-group [aria-checked = true] {
+        .alert-button-inner {
+          .alert-radio-icon {
+            background-color: #2954FF;
+            border: none !important;
+            width: 19px;
+            height: 19px;
+            border-radius: 50%;
+
+          }
+          
+          .alert-radio-inner{
+            top: 3px;
+            left: 7px;
+            width: 5px;
+            height: 10px;
+            border-width: 2px;
+            border-style: solid;
+            border-left:0;
+            border-top:0;
+            border-radius: 0;
+            border-color: white;
+            background-color: inherit;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            transition: none;
+          }
+
+          .alert-radio-label {
+            font-weight: bold !important;
+          }
+        }
+      }
+  
+      .alert-radio-group {
+        border: none;
+        background-color: white;
+        border-bottom-left-radius: 11px;
+        border-bottom-right-radius: 11px;
+  
+        .alert-radio-button[aria-checked=true] > .button-inner > .alert-radio-icon > .alert-radio-inner {
+          border-width: 2px;
+          border-top-width: 0;
+          border-left-width: 0;
+        }
+  
+        .alert-radio-button {
+          // padding: 22px 0 22px 32px;
+          border-top: 2px solid rgba(black, 0.06);
+  
+          .alert-button-inner {
+            position: relative;
+            margin-left: 6%;
+
+            .alert-radio-icon {
+              left: 0;
+              top:28%;
+              margin: 0 14px 0 0;
+              border: 1px solid rgba(#111E52, 0.6);
+              width: 18px;
+              height: 18px;
+              min-width: 0;
+              border-radius: 50%;
+              position: absolute;
+              
+  
+              .alert-radio-inner {
+                top: 3px;
+                left: 7px;
+                width: 5px;
+                height: 10px;
+                border-width: 2px;
+                border-style: solid;
+                border-left:0;
+                border-top:0;
+                border-radius: 0;
+                border-color: white;
+                background-color: inherit;
+                -webkit-transform: rotate(45deg);
+                transform: rotate(45deg);
+                transition: none;
+              }
+            }
+  
+            .alert-radio-label {
+              padding: 0;
+              color: #032369;
+              font-weight: 400;
+              line-height: 21px;
+              letter-spacing: 0.07em;
+              font-size: 16;
+              margin: 0 0 0 32px;
+            }
+          }
+        }
+      }
+  
+      .alert-button-group {
+        padding: 0;
+        margin: 6px 0 0;
+        background-color: white;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+        width: 100%;
+        justify-content: space-between;
+  
+        .alert-button {
+          width: 50%;
+          height: auto;
+          padding: 16px 0;
+          margin: 0;
+          font-weight: 500;
+          line-height: 21px;
+          letter-spacing: 0.07em;
+          font-size: 16;
+          text-transform: capitalize;
+          border-top: 0;
+  
+          .alert-button-inner {
+            justify-content: center;
+            color: #111E52;
+          }
+  
+          .button-inner {
+            justify-content: center;
+            color: #111E52;
+          }
+        }
+  
+        .alert-button:last-of-type {
+          border-left: 1px solid rgba(60, 60, 67, 0.36);
+          .button-inner {
+            color: #FD5D75;
+          }
+        }
+      }
+    }
+  }
+
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -105,7 +279,7 @@
     --ion-color-tertiary-shade: #5d58e0;
     --ion-color-tertiary-tint: #7974ff;
 
-    --ion-color-success: #2fdf75;
+    --ion-color-success: #00B389;
     --ion-color-success-rgb: 47,223,117;
     --ion-color-success-contrast: #000000;
     --ion-color-success-contrast-rgb: 0,0,0;
@@ -119,7 +293,7 @@
     --ion-color-warning-shade: #e0bb2e;
     --ion-color-warning-tint: #ffd948;
 
-    --ion-color-danger: #ff4961;
+    --ion-color-danger: #FF0000;
     --ion-color-danger-rgb: 255,73,97;
     --ion-color-danger-contrast: #ffffff;
     --ion-color-danger-contrast-rgb: 255,255,255;

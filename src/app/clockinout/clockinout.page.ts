@@ -20,9 +20,17 @@ export class ClockinoutPage implements OnInit {
 
   constructor(private modal: ModalController) { }
 
-  ngOnInit() {
-    if (this.type == "Clocked Out:") {
+  async ngOnInit() {
+    let ele = <HTMLElement> document.getElementsByClassName('header')[0];
+    
+    console.log(ele);
+    if (this.type == "Clocked Out") {
+      console.log('debug');
       this.clock_out = true;
+      ele.setAttribute('style', 'background: #FF0000');
+    }
+    else {
+      ele.setAttribute('style', 'background: #00B389');
     }
     this.user_type = this.user_type[0].toUpperCase() + this.user_type.substring(1).toLowerCase();
     this.changeDateTimeFormat(this.dateTime);

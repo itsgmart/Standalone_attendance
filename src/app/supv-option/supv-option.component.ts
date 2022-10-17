@@ -17,7 +17,10 @@ export class SupvOptionComponent implements OnInit
 
   constructor(private modal:ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    document.getElementById('p1').style.backgroundColor = "#DEE8FE";
+  }
 
   dismissModal(data) 
   {
@@ -45,9 +48,9 @@ export class SupvOptionComponent implements OnInit
   clickSelection(id) 
   {
     //var radios = document.getElementsByName('cases');
-    let selection1 = <HTMLInputElement>document.getElementById('');
-    console.log(selection1);
-    console.log(id);
+    // let selection1 = <HTMLInputElement>document.getElementById('');
+    // console.log(selection1);
+    // console.log(id);
 
     if(id == 'p2')
     {

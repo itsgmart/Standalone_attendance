@@ -3,7 +3,7 @@ import { Plugins } from "@capacitor/core"
 const { CameraPreview } = Plugins;
 import { CameraPreviewOptions, CameraPreviewPictureOptions, CameraSampleOptions } from '@capacitor-community/camera-preview';
 import '@capacitor-community/camera-preview';
-import { ModalController, NavController, ToastController, LoadingController  } from '@ionic/angular';
+import { ModalController, NavController, ToastController, LoadingController } from '@ionic/angular';
 import * as faceapi from 'face-api.js';
 // import { File } from '@awesome-cordova-plugins/file/ngx';
 // import { TouchSequence } from 'selenium-webdriver';
@@ -16,6 +16,7 @@ import { SupvOptionComponent } from '../supv-option/supv-option.component';
 import { resolve } from 'dns';
 import { ChildActivationStart } from '@angular/router';
 import { Router } from '@angular/router';
+import { threadId } from 'worker_threads';
 
 
 
@@ -101,9 +102,10 @@ export class PreviewPage implements OnInit {
   toofastHeader:any;
   toofastMsg:any;
   userNotFound: boolean;
-  localUrl = "http://192.168.0.155";
+  localUrl = "http://192.168.18.23";
   isBlackOut = false;
   supvOptmodal: HTMLIonModalElement;
+  blackScreenLoader: any;
 
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
 
@@ -116,28 +118,12 @@ export class PreviewPage implements OnInit {
   async ionViewDidEnter() {
     console.log('entering preview page');
 
-
-    // this.supvOptmodal = await this.modalCtrl.create({
-    //   component: SupvOptionComponent,
-    //   cssClass: 'supvOptionModal',
-    //   showBackdrop: true,
-    //   backdropDismiss: false
-    // });
-    // if (this.facecheckLoader != null) {
-    //   await this.facecheckLoader.dismiss();
-    //   this.facecheckLoader = null;
-    // } 
-    // await this.supvOptmodal.present();
-    // console.log('modal presented');
-
     // await new Promise<void>((resolve)=>{
     //   setTimeout(()=>{
     //     resolve();
     //   },100);
     // });
-
     
-
     this.launchCamera();
     this.content = document.getElementById('contentPage');
     this.storage.get('attendance_assignment').then((data)=>{
@@ -147,7 +133,6 @@ export class PreviewPage implements OnInit {
       this.enable_attendance_log = this.assignment.enable_attendance_log;
       this.shift_hours_split = this.assignment.shift_hours.split("|");
       this.shift_hours_supervisor_split = this.assignment.shift_hours_supervisor.split("|");
-      
     });
   }
 
@@ -169,16 +154,6 @@ export class PreviewPage implements OnInit {
 
       if (this.taptap == 0)
       {
-        this.modalCtrl.create({
-          component: SupvOptionComponent,
-          cssClass: 'supvOptionModal',
-          showBackdrop: true,
-          backdropDismiss: false
-        });
-        if (this.facecheckLoader != null) {
-           this.facecheckLoader.dismiss();
-          this.facecheckLoader = null;
-        }
         this.taptap = 9;
         let text = "Press a button!\nEither OK or Cancel.";
         if (confirm(text) == true)
@@ -186,12 +161,9 @@ export class PreviewPage implements OnInit {
             this.storage.clear();
             this.router.navigateByUrl('/home')
             console.log(this.taptap);
-            
-            
           }
       }
-
-}
+  }
 
   ionViewDidLeave() {
     console.log('closing camera');
@@ -227,10 +199,22 @@ export class PreviewPage implements OnInit {
 
   async startDetection() { 
     console.log("start detection");
-    this.storage.get("attendance_assignment").then( (data) => {  
-      this.id = data['attendance_assignment']['id'];    
-      console.log("id inside",this.id); 
-    });
+
+    if(!this.blackScreenLoader) {
+      var loader = await this.loader.create({
+        spinner: 'crescent',
+        cssClass: 'loader',
+        message: 'Initializing Camera',
+      });
+      (await loader).present();
+      this.storage.get("attendance_assignment").then( (data) => {  
+        this.id = data['attendance_assignment']['id'];    
+        console.log("id inside",this.id); 
+      });
+    } else {
+      this.blackScreenLoader.dismiss();
+      this.blackScreenLoader = null;
+    }
 
 
     const cameraSampleOptions: CameraSampleOptions = {
@@ -251,6 +235,10 @@ export class PreviewPage implements OnInit {
       this.capturedImage.height = this.height;
      
       this.detection = await faceapi.detectSingleFace(this.capturedImage,  new  faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.5}));
+      if(loader) {
+        (await loader).dismiss();
+        loader = null;
+      }
       console.log(this.detection);
 
       this.processImage();
@@ -266,14 +254,17 @@ export class PreviewPage implements OnInit {
     if (this.detection == undefined) {
       if(this.modalAttendance != undefined) {
         if(this.modalAttendance.isOpen) {
-          this.modalAttendance.dismiss();
-          this.modalAttendance.isOpen = false;
+          // this.modalAttendance.dismiss();
+          // this.modalAttendance.isOpen = false;
         }
       }
 
+      if(this.warningShown)
+        this.warningShown = false;
+
       this.count = this.maxCount; 
       console.log("Count1:",this.count);
-      this.faceDetected = false;
+      this.faceDetected = true;
       //this.warningShown = false;
     } 
     else {  // Faace is detected
@@ -307,11 +298,13 @@ export class PreviewPage implements OnInit {
         this.faceDetected = false;
         this.count = this.maxCount;
         this.rawImageCheck = this.rawImage;
-        console.log('debug');
-        console.log(this.modalAttendance);
-        if(this.facecheckLoader == null && this.modalAttendance == null && this.isToastOpen == false && this.supvOptmodal==null) 
+        if(this.facecheckLoader == null && this.modalAttendance == null 
+          && this.isToastOpen == false && this.supvOptmodal==null && this.tooFast == false) 
         {
+          console.log('checking face');
           this.facecheckLoader = await this.loader.create({
+            spinner: 'crescent',
+            cssClass: 'loader',
             message: 'Loading please wait..'
           });
           await this.facecheckLoader.present();
@@ -376,7 +369,7 @@ export class PreviewPage implements OnInit {
       };
       console.log("params:", params);
       console.log(url);
-      url = "http://192.168.0.155";
+      url = this.localUrl;
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
         
@@ -399,9 +392,9 @@ export class PreviewPage implements OnInit {
                   this.warningShown = false;
                   this.toofastHeader = 'Scan Error';
                   this.toofastMsg = `Scanning allowed after ${scanwait} seconds. Please try again later` ;
-                  // this.timeout(10000).then(()=>{
-                  //   this.tooFast = false;
-                  // });
+                  this.timeout(3000).then(()=>{
+                    this.tooFast = false;
+                  });
                   console.log(scanwait);
                 break;
 
@@ -486,32 +479,9 @@ export class PreviewPage implements OnInit {
       console.log(`hersadafe ${name}`);
     });
     if(data['type'] == 'Clock In') {
-      this.type = 'Clocked In:';
-      // if(this.user_type == 'user') {  
-      //   console.log('creating modal for Supervisor Option');
-      //   const modal = await this.modalCtrl.create({
-      //     component: SupvOptionComponent,
-      //     cssClass: 'supvOptionModal',
-      //     showBackdrop: true,
-      //     backdropDismiss: false
-      //   });
-      //   if (this.facecheckLoader != null) {
-      //     await this.facecheckLoader.dismiss();
-      //     this.facecheckLoader = null;
-      //   } 
-      //   await modal.present();
-      //   console.log('modal presented');
-      //   await modal.onDidDismiss().then(data=>{
-
-      //     if (data['data']['role'] != undefined) {
-      //       this.user_type = data['data']['role'];
-      //     }
-      //   });
-      // }
-
+      this.type = 'Clocked In';
     } else {
-      this.type = 'Clocked Out:';
-      
+      this.type = 'Clocked Out';
     }
 
     console.log('creating modal');
@@ -561,11 +531,41 @@ export class PreviewPage implements OnInit {
   }
 
   convertToTime(dateTime): string {
-    return dateTime.split("-")[2].split(" ")[1];
+    console.log('debug');
+
+
+    let date = new Date(dateTime);
+    let dateString = date.toLocaleDateString('en-US', {
+      day:'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric', 
+      hour12:false
+    });
+    // E.g Oct 12, 2022, 09:00
+    let arr = dateString.split(',');
+
+    // Oct 12
+    let mthDay = arr[0].split(' ');
+
+
+    let day = mthDay[1];
+    let mth = mthDay[0];
+    let yr = arr[1];
+    let time = arr[2];
+
+    let newDateTime = `${day} ${mth} ${yr} ${time}`;
+    console.log(newDateTime);
+    return newDateTime;
   }
 
   async createLoader() {
-    const loading = await this.loader.create();
+    const loading = await this.loader.create({
+      spinner: 'crescent',
+      cssClass: 'loader',
+      message: 'Loading',
+    });
     return loading;
   }
 
@@ -578,29 +578,14 @@ export class PreviewPage implements OnInit {
   }
 
   async resumeDetection(){
-    var loader = this.createLoader();
-    (await loader).present();
-    this.launchCamera();
-
-this.supvOptmodal = await this.modalCtrl.create({
-                component: SupvOptionComponent,
-                cssClass: 'supvOptionModal',
-                showBackdrop: true,
-                backdropDismiss: false
-              });
-              if (this.facecheckLoader != null) {
-                await this.facecheckLoader.dismiss();
-                this.facecheckLoader = null;
-              } 
-              await this.supvOptmodal.present();
-              console.log('modal presented');
-
-    await new Promise<void>((resolve)=>{
-      setTimeout(async () => {
-        (await loader).dismiss();
-        resolve();
-      }, 5000);
+    this.blackScreenLoader = await this.loader.create({
+      spinner: 'crescent',
+      cssClass: 'loader',
+      message: 'Initializing Camera',
     });
+
+    (await this.blackScreenLoader).present();
+    this.launchCamera();
     this.isBlackOut = false;
 
   }

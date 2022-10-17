@@ -1,20 +1,4 @@
-<!-- <ion-content>
-  <ion-row class="header">
-    <h1><ion-icon name="checkmark-circle-outline"></ion-icon>Successful</h1>
-  </ion-row>
 
-  <ion-row>
-    <h2>{{user}}, {{user_type}}</h2>
-  </ion-row>
-
-
-  <ion-row [style.color]="clock_out ? '#FF0000' : '#00B389'" class="msg">
-    <h3>{{type}}</h3>
-    <h3>{{date_time_12h_format}}</h3>
-    <h3>For Shift:</h3>
-    <h3>{{shift_in_12h_format}} - {{shift_out_12h_format}}</h3>
-  </ion-row>
-</ion-content> -->
 <ion-grid style="margin: 8%;">
   <!-- first row -->
   <ion-row>
@@ -22,71 +6,69 @@
       <ion-icon name="checkmark-circle-outline"></ion-icon>Successful {{type}}
     </ion-col>
   </ion-row>
-<!-- second row -->
-<div class="bgcolor">
-  <ion-row class="info">
-    <ion-col>
-      User
-    </ion-col>
-    <ion-col>
-    {{user}}
-    </ion-col>
-  </ion-row>
-<!-- third row -->
-  <ion-row class="info">
-    <ion-col>
-      <!-- emptyy -->
-    </ion-col>
-    <ion-col>
-      {{user_type}}
-    </ion-col>
-  </ion-row>
-                          <!-- empty row -->
-                          <ion-row class="info">
-                            <ion-col>
-                              <!-- empty -->
-                            </ion-col>
-                            <ion-col>
-                                <!-- emptyy -->
-                            </ion-col>
-                          </ion-row>
-  <!-- fourth row -->
 
-  <ion-row class="info">
-    <ion-col>
-      Shift from
-    </ion-col>
-    <ion-col>
-      {{date_time_12h_format}}
-    </ion-col>
-  </ion-row>
-                      <!-- empty row -->
-                      <ion-row class="info">
-                        <ion-col>
-                          <!-- emptyy -->
-                        </ion-col>
-                        <ion-col>
-                            <!-- emptyy -->
-                        </ion-col>
-                      </ion-row>
-    <!-- fifth row -->
-    <ion-row  class="info">
-      <ion-col>
-        Shift to
+  <!-- second row --> 
+  <div class="bgcolor">
+    <ion-row class="info">
+      <ion-col size="4">
+        User
       </ion-col>
       <ion-col>
-        {{shift_in_12h_format}} - {{shift_out_12h_format}}
+      {{user}}
+      <div>
+        {{user_type}}
+      </div>
       </ion-col>
     </ion-row>
-                <!-- empty row -->
-                <ion-row class="info">
-                  <ion-col>
-                    <!-- emptyy -->
-                  </ion-col>
-                  <ion-col>
-                      <!-- emptyy -->
-                  </ion-col>
-                </ion-row>
-                <!--  -->
+
+    <!-- empty row -->
+    <ion-row class="info">
+      <ion-col>
+        <!-- empty -->
+      </ion-col>
+      <ion-col>
+          <!-- emptyy -->
+      </ion-col>
+    </ion-row>
+
+    <!-- fourth row -->
+
+    <ion-row class="info">
+      <ion-col size="4">
+        Shift from
+      </ion-col>
+      <ion-col size="4">
+        {{shift_in_12h_format}}
+      </ion-col>
+    </ion-row>
+    <!-- empty row -->
+    <ion-row class="info">
+      <ion-col size="4">
+        <!-- emptyy -->
+      </ion-col>
+      <ion-col>
+          <!-- emptyy -->
+      </ion-col>
+    </ion-row>
+
+    <!-- fifth row -->
+    <ion-row  class="info">
+      <ion-col size="4">
+        Shift to
+      </ion-col>
+      <ion-col size="4">
+        {{shift_out_12h_format}}
+      </ion-col>
+    </ion-row>
+    <!-- empty row -->
+    <ion-row class="info">
+      <ion-col>
+        <!-- emptyy -->
+      </ion-col>
+      <ion-col>
+          <!-- emptyy -->
+      </ion-col>
+    </ion-row>
+    <!--  -->
   </div>
 </ion-grid>

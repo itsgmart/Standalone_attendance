@@ -1,33 +1,39 @@
 
-<ion-row class="clockinas">
-    Clock In as
-</ion-row>
 
 
-<div class="background"></div>
 
-<ion-row>
-    <ion-col style="padding:0px;">
-          <label class='radio-label' id="p1" style="margin-left:34px; border-radius: 5px 0px 0px 5px;">
-              <input name='selection' type='radio' id='supv' checked='checked' (click) = 'clickSelection("p1")' >
-              <span class='inner-label2'>Supervisor</span></label>
-    </ion-col>
-
-    <ion-col style="padding:0px;">
-          <label class='radio-label' id="p2" style="margin-right:25px; border-radius: 0px 5px 5px 0px;">
-              <input name='selection' type='radio' id='normalCleaner' (click) = 'clickSelection("p2")'>
-              <span class='inner-label'>User</span></label>
-    </ion-col>
+<ion-card class="background">
+    <ion-row class="clockinas">
+        Clock In as
     </ion-row>
 
-    <ion-col style="padding-top: 25px;">
-        <ion-row class='bordershape'>
-                <button class='button-label' style="background: #00B389; color: #FFFFFF;"(click)="submit()">
-                Clock&nbsp;In</button>
-        </ion-row>
+    <ion-row style="margin-bottom:5%;">
+        <ion-col style="padding:0px;">
+              <label class='radio-label' id="p1" style="margin-left:10%; border-radius: 5px 0px 0px 5px;">
+                  <input name='selection' type='radio' id='supv' checked='checked' (click) = 'clickSelection("p1")' >
+                  <span class='inner-label2'>Supervisor</span></label>
+        </ion-col>
+    
+        <ion-col style="padding:0px;">
+              <label class='radio-label' id="p2" style="margin-right:10%; border-radius: 0px 5px 5px 0px;">
+                  <input name='selection' type='radio' id='normalCleaner' (click) = 'clickSelection("p2")'>
+                  <span class='inner-label'>User</span></label>
+        </ion-col>
+    </ion-row>
 
-        <ion-row >
-                <button class='button-label' style="background: #FCFCFC; margin-top: 70px;" (click)="cancel()">
-                    &nbsp;Cancel&nbsp;</button>
-        </ion-row>
-    </ion-col>
+    <ion-row >
+        <button class='button-label' style="background: #00B389; color: #FFFFFF;" (click)="submit()">
+            Clock&nbsp;In
+        </button>
+    </ion-row>
+
+    <ion-row >
+        <button class='button-label' style="background: #FCFCFC; font-weight:bold;" (click)="cancel()">
+            &nbsp;Cancel&nbsp;</button>
+    </ion-row>
+    
+</ion-card>
+
+
+
+

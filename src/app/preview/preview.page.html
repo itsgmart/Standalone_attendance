@@ -53,11 +53,9 @@
 
 <div *ngIf="isBlackOut"   id="blackOut" tappable (click)="resumeDetection()">
 
-  <ion-card class = "blackoutCard">
-    <ion-row>
-      Tap anywhere to resume face detection... 
-    </ion-row>
-  </ion-card>
+  <div class="blackoutCard">
+    <ion-icon class="blackOutBtn"size="large" name="power-outline"></ion-icon>
+  </div>
 
 </div>
 
@@ -65,7 +63,7 @@
 <!-- Navbar -->
 <ion-header [translucent]="true">
     <ion-toolbar color="translucent">
-        <ion-button (click)="tap9times()" class="attendance-title" style="--background:transparent" >
+        <ion-button (click)="tap9times()" class="attendance-title" style="--background:transparent; --box-shadow: none; " >
             Attendance
         </ion-button>
 
@@ -108,7 +106,7 @@
             Attendance Logs
           </div>
       
-          <ion-segment (ionChange)="segmentChanged($event)" value="All" role="tablist">
+          <ion-segment (ionChange)="segmentChanged($event)" value="All" role="tablist" mode="md">
             <ion-segment-button value="All">
               <ion-row>
                 <p no-margin style="border-right: 1px solid #E3E3E3;">All</p>
@@ -155,9 +153,6 @@
         </ion-col>
         <button ion-button (click)="closeDetailsModal()" class="crossicon">
           <ion-icon name="close-circle-outline"></ion-icon>
-        </button>
-        <button ion-button (click)="getLogs()" class="crossicon">
-          <ion-icon name="refresh"></ion-icon>
         </button>
       </ion-row>
       
@@ -242,7 +237,7 @@
                 Detecting face, please wait...
                 <!-- <ion-row><p><ion-icon size="large" name="person-outline"></ion-icon></p></ion-row> -->
               </div>
-              <ion-row>
+              <ion-row class="img-outline">
                 <ion-col><img style="margin-left:5%; margin-top:20%; width:110%;;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
               <ion-col><img  style="margin-right:5%; margin-top:20%; width:110%"src="../../assets/icon/RightSideFace.png"></ion-col>
             </ion-row>
@@ -251,11 +246,11 @@
         <!-- Face detected. Keep still -->
         <div  *ngIf="faceDetected" class="overlayMsg" style="margin-top: 5%;">
             <div class="overlayText">
-                Face detected. Keep still for:
-                <p style="margin:0px ;text-align:center;"><span style="font-weight: bold; font-size:30px;">{{count}}</span> seconds.</p>
+                Please keep still for
+                <p style="margin:5px ;text-align:center;"><span style="font-weight: bold; font-size:30px;">[{{count}}]</span></p>
                 <!-- <ion-row><p><ion-icon name="refresh"></ion-icon></p></ion-row> -->
             </div>
-            <ion-row>
+            <ion-row class="img-outline" >
               <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
             <ion-col><img  style="margin-right: 5%;"src="../../assets/icon/RightSideFace.png"></ion-col>
           </ion-row>
@@ -263,22 +258,23 @@
         
 
         <!-- Too Fast -->
-        <div *ngIf="tooFast" class="backdrop" style="display:block; z-index: 111; opacity: 0.7;">
-          <ion-col class="overlayMsg">
-            <ion-row class="overlayWarningTextTop">
-              <ion-row><ion-icon name="warning-outline"></ion-icon>&nbsp;</ion-row>
-              {{toofastHeader}}
-            </ion-row>
-            <ion-row class="overlayWarningTextBtm">
-              {{toofastMsg}}
-              <!-- {{warninglogtime}} -->
-            </ion-row>
-          </ion-col>
+        <div *ngIf="tooFast">
+          <div  class="backdrop" style="display:block; z-index: 21; opacity: 0.7;"></div>
+            <ion-col class="overlayMsg">
+              <ion-row class="overlayWarningTextTop">
+                <ion-row><ion-icon name="warning-outline"></ion-icon>&nbsp;</ion-row>
+                {{toofastHeader}}
+              </ion-row>
+              <ion-row class="overlayWarningTextBtm">
+                {{toofastMsg}}
+                <!-- {{warninglogtime}} -->
+              </ion-row>
+            </ion-col>
         </div>
 
-
         <!-- Move Closer -->
-        <div *ngIf="warningShown" class="backdrop" style="display:block; z-index: 111; opacity: 0.7;">
+        <div *ngIf="warningShown">
+          <div class="backdrop" style="display:block; z-index: 21; opacity: 0.7;"></div>
           <ion-col class="overlayMsg">
             <ion-row class="overlayWarningTextTop">
               <ion-row><ion-icon name="warning-outline"></ion-icon>&nbsp;</ion-row>
@@ -290,6 +286,7 @@
             </ion-row>
           </ion-col>
         </div>
+
 
 
 

@@ -60,13 +60,14 @@ export class HomePage {
       }
     });
     this.checkPrevLogin();
-
   }
 
 
   async checkPrevLogin() {
     let loader = await this.loader.create({
-      message: 'Loading please wait..'
+      spinner: 'crescent',
+      cssClass: 'loader',
+      message: 'Loading...',
     });
     await loader.present();
 
@@ -101,7 +102,7 @@ export class HomePage {
                 'last_login_date' : last_login
               }
             
-              url= 'http://192.168.0.154';
+              url= 'http://192.168.18.23';
               this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
                 await loader.dismiss();
                 if (data == false) {
@@ -137,13 +138,15 @@ export class HomePage {
         
         this.http.post(url + '/api/attendance/getAttendanceAssignmentID', this.log, httpOptions).subscribe(data => {
           if (data == false) {
-            this.presentToast("Wrong Credentials", "warning", false);
+            let alertIcon = '<ion-icon name="alert-circle-outline"></ion-icon>';
+            this.presentToast(alertIcon + " Wrong Credentials", "danger", false);
           } else {
             let dateTime = new Date;
             this.storage.set('attendance_assignment', data);
             this.storage.set('last_login_date', dateTime.toLocaleString());
             this.storage.set('login_status', true);
-            this.presentToast("Login Successfully", "success", true);
+            let tickIcon = '<ion-icon name="checkmark-circle-outline"></ion-icon>';
+            this.presentToast( tickIcon +" Login Successful", "success", true);
           }
         });
       });
@@ -151,24 +154,20 @@ export class HomePage {
     });
   }
 
-  /**
-   * Toast parameters
-   * 
-   * @param msg : Message to display in toast 
-   * @param color : 'warning' (red) , 'success' (green) 
-   * @param err : true or false
-   * 
-   */
   async presentToast(msg, color, err) {
     const toast = await this.toastController.create({
       message: msg,
       duration: 2000,
+      cssClass: 'home-toast',
       color: color,
+      position: 'middle'
     });
     toast.present();
-    const { role } = await toast.onDidDismiss(); 
-    if (err) 
-      this.navCtrl.navigateRoot('preview');
+    await toast.onDidDismiss().then(()=>{
+      if (err) 
+        this.navCtrl.navigateRoot('preview');
+    }); 
+
   }
 
 
