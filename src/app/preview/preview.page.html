@@ -52,9 +52,10 @@
 </div>
 
 <div *ngIf="isBlackOut"   id="blackOut" tappable (click)="resumeDetection()">
-
+  
   <div class="blackoutCard">
-    <ion-icon class="blackOutBtn"size="large" name="power-outline"></ion-icon>
+    <div style="color:white; font-size: 3vh;">Tap Button to Turn Screen On</div>
+    <br><ion-icon class="blackOutBtn"size="large"  style="margin-top: 7%; border: 5vw solid #FF6C27;" name="power-outline"></ion-icon>
   </div>
 
 </div>
@@ -234,12 +235,13 @@
         <!-- Detecting face, please wait -->
         <div  *ngIf="!faceDetected" class="overlayMsg" style="margin-top: 5%;">
             <div class="overlayText" style="color:black;">
-                Detecting face, please wait...
+                Detecting face,
+                <p style="margin:5px ;text-align:center;"><span style="font-size:3vh;">please wait...</span></p>
                 <!-- <ion-row><p><ion-icon size="large" name="person-outline"></ion-icon></p></ion-row> -->
               </div>
-              <ion-row class="img-outline">
-                <ion-col><img style="margin-left:5%; margin-top:20%; width:110%;;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
-              <ion-col><img  style="margin-right:5%; margin-top:20%; width:110%"src="../../assets/icon/RightSideFace.png"></ion-col>
+              <ion-row>
+              <ion-col class="img-outline-left"><img style="width: 74%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+              <ion-col class="img-outline-right"><img style="width: 74%;" src="../../assets/icon/RightSideFace.png"></ion-col>
             </ion-row>
         </div>
 
@@ -247,12 +249,14 @@
         <div  *ngIf="faceDetected" class="overlayMsg" style="margin-top: 5%;">
             <div class="overlayText">
                 Please keep still for
-                <p style="margin:5px ;text-align:center;"><span style="font-weight: bold; font-size:30px;">[{{count}}]</span></p>
+                <p style="margin:5px ;text-align:center;"><span style="font-weight: bold; font-size:3vh;">[{{count}}]</span></p>
                 <!-- <ion-row><p><ion-icon name="refresh"></ion-icon></p></ion-row> -->
             </div>
-            <ion-row class="img-outline" >
-              <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
-            <ion-col><img  style="margin-right: 5%;"src="../../assets/icon/RightSideFace.png"></ion-col>
+            <ion-row>
+            <ion-col class="img-outline-left"><img style="width: 74%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+            <ion-col class="img-outline-right"><img style="width: 74%;" src="../../assets/icon/RightSideFace.png"></ion-col>
+            <!--               <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+            <ion-col><img  style="margin-right: 5%;"src="../../assets/icon/RightSideFace.png"></ion-col> -->
           </ion-row>
         </div>
         

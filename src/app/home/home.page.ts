@@ -102,7 +102,7 @@ export class HomePage {
                 'last_login_date' : last_login
               }
             
-              url= 'http://192.168.18.23';
+              url= 'http://192.168.0.177';
               this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
                 await loader.dismiss();
                 if (data == false) {

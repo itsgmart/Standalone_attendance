@@ -50,6 +50,8 @@ export class PreviewPage implements OnInit {
   message: any;
   modal: HTMLElement;
   faceDetected: boolean = false;
+
+
   url: any;
   show_details = false;
   isSupervisor = false;
@@ -95,17 +97,17 @@ export class PreviewPage implements OnInit {
 
   enable_attendance_log:any;
   facecheckLoader:any;
-
-
+ 
   warningHeader:any;
   warningMsg:any;
   toofastHeader:any;
   toofastMsg:any;
   userNotFound: boolean;
-  localUrl = "http://192.168.18.23";
+  localUrl = "http://192.168.0.177";
   isBlackOut = false;
   supvOptmodal: HTMLIonModalElement;
   blackScreenLoader: any;
+
 
   constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
 
@@ -133,6 +135,7 @@ export class PreviewPage implements OnInit {
       this.enable_attendance_log = this.assignment.enable_attendance_log;
       this.shift_hours_split = this.assignment.shift_hours.split("|");
       this.shift_hours_supervisor_split = this.assignment.shift_hours_supervisor.split("|");
+      
     });
   }
 
@@ -254,8 +257,9 @@ export class PreviewPage implements OnInit {
     if (this.detection == undefined) {
       if(this.modalAttendance != undefined) {
         if(this.modalAttendance.isOpen) {
-          // this.modalAttendance.dismiss();
-          // this.modalAttendance.isOpen = false;
+          // comment both below to edit modalattendance
+          this.modalAttendance.dismiss();
+          this.modalAttendance.isOpen = false;
         }
       }
 
@@ -290,7 +294,6 @@ export class PreviewPage implements OnInit {
         // this.timeout(2000); //warning stay for  2 seconds
         // this.warningShown = false;
       }
-
       // if count reach 0, take picture and check face, and stop detection
       console.log("Count2:",this.count); 
       if (this.count == 0) {  
@@ -298,6 +301,8 @@ export class PreviewPage implements OnInit {
         this.faceDetected = false;
         this.count = this.maxCount;
         this.rawImageCheck = this.rawImage;
+
+
         if(this.facecheckLoader == null && this.modalAttendance == null 
           && this.isToastOpen == false && this.supvOptmodal==null && this.tooFast == false) 
         {
@@ -305,11 +310,12 @@ export class PreviewPage implements OnInit {
           this.facecheckLoader = await this.loader.create({
             spinner: 'crescent',
             cssClass: 'loader',
-            message: 'Loading please wait..'
+            message: 'Loading Please Wait'
           });
           await this.facecheckLoader.present();
           this.checkFace();
         }
+
       } 
 
       this.resizedDetections = faceapi.resizeResults(
@@ -422,7 +428,11 @@ export class PreviewPage implements OnInit {
               await this.supvOptmodal.present();
               console.log('modal presented');
               await this.supvOptmodal.onDidDismiss().then(async x=>{
-                let loader = this.createLoader();
+                let loader = this.loader.create({
+                  spinner: 'crescent',
+                  cssClass: 'loader',
+                  message: 'Clocking In',
+                });
                 (await loader).present();
                 this.supvOptmodal = null;
                 if (x['data']['role'] != undefined) 

@@ -317,7 +317,7 @@ $colors: (
   }
 
   .ion-page{
-    margin-top: 13%;
+    margin-top: -6%;
   }
 
 
@@ -653,10 +653,18 @@ $colors: (
 
 
 
-.img-outline{
-  position:relative;
-  right:5%;
+.img-outline-left{
+  position:absolute;
+  width: 50%;
+  left:10%;
 }
+
+.img-outline-right{
+  position:absolute;
+  width: 50%;
+  right:4%;
+}
+
 
 
 .loader{

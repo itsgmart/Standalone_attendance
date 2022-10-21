@@ -1,74 +1,30 @@
 
 <ion-grid style="margin: 8%;">
+
   <!-- first row -->
-  <ion-row>
-    <ion-col class="header">
-      <ion-icon name="checkmark-circle-outline"></ion-icon>Successful {{type}}
-    </ion-col>
-  </ion-row>
+  <ion-row class="header">
+    <ion-icon name="checkmark-circle-outline">
+    </ion-icon>  Successful {{type}}</ion-row>
 
   <!-- second row --> 
   <div class="bgcolor">
-    <ion-row class="info">
-      <ion-col size="4">
-        User
-      </ion-col>
-      <ion-col>
-      {{user}}
-      <div>
-        {{user_type}}
-      </div>
-      </ion-col>
-    </ion-row>
-
+      <ion-row class="textinside" style="padding-top: 5%;"><b>{{user}}</b></ion-row>
+      <ion-row class="textinside" style="padding-bottom: 12%;">{{user_type}}</ion-row>      
     <!-- empty row -->
-    <ion-row class="info">
-      <ion-col>
-        <!-- empty -->
-      </ion-col>
-      <ion-col>
-          <!-- emptyy -->
-      </ion-col>
-    </ion-row>
-
+      <ion-row><b></b></ion-row>
+      <ion-row><b></b></ion-row>
     <!-- fourth row -->
-
-    <ion-row class="info">
-      <ion-col size="4">
-        Shift from
-      </ion-col>
-      <ion-col size="4">
-        {{shift_in_12h_format}}
-      </ion-col>
-    </ion-row>
+    <ion-row class="textinside"><b>{{type}} At</b></ion-row>
+    <ion-row class="textinside" style="padding-bottom: 12%;">{{shift_in_12h_format}}</ion-row>
     <!-- empty row -->
-    <ion-row class="info">
-      <ion-col size="4">
-        <!-- emptyy -->
-      </ion-col>
-      <ion-col>
-          <!-- emptyy -->
-      </ion-col>
-    </ion-row>
-
+      <ion-row></ion-row>
+      <ion-row></ion-row>
     <!-- fifth row -->
-    <ion-row  class="info">
-      <ion-col size="4">
-        Shift to
-      </ion-col>
-      <ion-col size="4">
-        {{shift_out_12h_format}}
-      </ion-col>
-    </ion-row>
+    <ion-row class="textinside"><b>Shift Period</b></ion-row>
+    <ion-row class="textinside" style="padding-bottom: 12%;">{{shift_out_12h_format}}</ion-row>
     <!-- empty row -->
-    <ion-row class="info">
-      <ion-col>
-        <!-- emptyy -->
-      </ion-col>
-      <ion-col>
-          <!-- emptyy -->
-      </ion-col>
-    </ion-row>
+      <ion-row></ion-row>
     <!--  -->
   </div>
+
 </ion-grid>
