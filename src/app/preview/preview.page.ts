@@ -103,7 +103,7 @@ export class PreviewPage implements OnInit {
   toofastHeader:any;
   toofastMsg:any;
   userNotFound: boolean;
-  localUrl = "http://192.168.0.177";
+  localUrl = "http://192.168.0.155";
   isBlackOut = false;
   supvOptmodal: HTMLIonModalElement;
   blackScreenLoader: any;

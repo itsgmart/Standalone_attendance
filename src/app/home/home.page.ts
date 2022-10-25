@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Globalization } from '@awesome-cordova-plugins/globalization/ngx';
 import {GlobalProviderService} from '../services/global-provider.service';
 import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import { Console } from 'console';
+import { Console, error } from 'console';
 import { ToastController, NavController, LoadingController } from '@ionic/angular';
 import { ClientRequest } from 'http';
 import { runInThisContext } from 'vm';
@@ -17,6 +17,7 @@ export class HomePage {
   storage = this.global.storage;
   log = {};
   selectOptions:any;
+  localUrl = 'http://192.168.0.155';
   
   constructor(private globalization: Globalization, public global: GlobalProviderService, public http: HttpClient, public toastController: ToastController, private navCtrl : NavController, private loader:LoadingController) {
   }
@@ -44,9 +45,12 @@ export class HomePage {
             this.log['server_location'] = "SG-2";   // TBC
           } else if (name['timezone'] == "GMT-05:00") {
             this.log['server_location'] = "Canada";
+          } else if (name['timezone'] == "GMT+03:00") {
+            this.log['server_location'] = "Qatar";
           } else {
             this.log['server_location'] = "SG-2";
           }
+
         });
       } else {
         this.global.server_url = data;
@@ -59,7 +63,7 @@ export class HomePage {
         }
       }
     });
-    this.checkPrevLogin();
+    // this.checkPrevLogin();
   }
 
 
@@ -86,6 +90,8 @@ export class HomePage {
               url = "https://sg.simpple.app";
             } else if (this.log['server_location'] == "Canada") {
               url = "https://ca.simpple.app";
+            } else if (this.log['server_location'] == "Qatar") {
+              url = "https://qr.simpple.app"
             }
       
             this.storage.set('url', url).then((url) => {
@@ -102,12 +108,21 @@ export class HomePage {
                 'last_login_date' : last_login
               }
             
-              url= 'http://192.168.0.177';
+              console.log(url);
+              url= this.localUrl;
               this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
                 await loader.dismiss();
                 if (data == false) {
                   this.navCtrl.navigateRoot('preview');
                 }
+              } , async error => {
+                console.log(error['status']);
+
+                if(error['status'] != 200) {
+                  await loader.dismiss();
+                }
+
+
               });
             });
           });
@@ -126,7 +141,10 @@ export class HomePage {
         url = "https://sg.simpple.app";
       } else if (this.log['server_location'] == "Canada") {
         url = "https://ca.simpple.app";
+      } else if (this.log['server_location'] == "Qatar") {
+        url = "https://qr.simpple.app"
       }
+
       this.storage.set('url', url).then((url) => {
         const httpOptions = {
           headers: new HttpHeaders({
@@ -136,6 +154,8 @@ export class HomePage {
           })
         }
         
+        console.log(url);
+        url = this.localUrl;
         this.http.post(url + '/api/attendance/getAttendanceAssignmentID', this.log, httpOptions).subscribe(data => {
           if (data == false) {
             let alertIcon = '<ion-icon name="alert-circle-outline"></ion-icon>';
@@ -144,6 +164,7 @@ export class HomePage {
             let dateTime = new Date;
             this.storage.set('attendance_assignment', data);
             this.storage.set('last_login_date', dateTime.toLocaleString());
+            console.log('set date time ', dateTime.toLocaleString())
             this.storage.set('login_status', true);
             let tickIcon = '<ion-icon name="checkmark-circle-outline"></ion-icon>';
             this.presentToast( tickIcon +" Login Successful", "success", true);
