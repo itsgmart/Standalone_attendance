@@ -25,7 +25,7 @@ export class ClockinoutPage implements OnInit {
     
     console.log(ele);
     if (this.type == "Clocked Out") {
-      console.log('debug');
+      
       this.clock_out = true;
       ele.setAttribute('style', 'background: #FF0000');
     }
@@ -33,9 +33,16 @@ export class ClockinoutPage implements OnInit {
       ele.setAttribute('style', 'background: #00B389');
     }
     this.user_type = this.user_type[0].toUpperCase() + this.user_type.substring(1).toLowerCase();
-    this.changeDateTimeFormat(this.dateTime);
-    this.shift_in_12h_format = this.changeTime12hFormat(this.shift_in);
-    this.shift_out_12h_format = this.changeTime12hFormat(this.shift_out);
+    // this.changeDateTimeFormat(this.dateTime);
+    // this.shift_in_12h_format = this.changeTime12hFormat(this.shift_in);
+    // this.shift_out_12h_format = this.changeTime12hFormat(this.shift_out);
+
+
+    let tempDateTime = this.dateTime.split(' ');
+    this.dateTime = tempDateTime[0] + ' | ' + tempDateTime[1];
+
+    this.shift_in = this.shift_in.split(' ')[5];
+    this.shift_out = this.shift_out.split(' ')[5];
   }
 
   changeDateTimeFormat(dateTime) {

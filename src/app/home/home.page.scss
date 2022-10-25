@@ -580,12 +580,13 @@ ion-content{
   margin-right: 12%;
   margin-left: 12%;
   margin-bottom: 4%;
-
+  background-color: white;
   
   .label {
     font-style: normal;
     font-weight: 700;
     font-size: 4vw;
+    color: black;
   }
 
   .home-input{
@@ -594,6 +595,7 @@ ion-content{
     border-radius: 10px;
     --padding-start: 5%;
     height: 10vw;
+    color:black;
   }
 
 }
