@@ -629,6 +629,7 @@ $colors: (
   text-align: left;
   padding: 7px; //how thick it is 
   white-space: pre-wrap;
+  color: black;
 }
 
 .logs-content{
@@ -641,6 +642,7 @@ $colors: (
   border-width: 6px;
   border-color: white;
 }
+
 
 #blackOut{
   position:absolute;
