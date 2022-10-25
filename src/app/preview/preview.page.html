@@ -15,7 +15,7 @@
     <div tappable class="select" (click)="showSelectedModal()">
       {{selectedName}}
     </div>
-    <button ion-button no-padding no-margin style="position:relative;left: 83%;bottom: 28px;"class="userFilterCloseBtn" (click)="clearSearch()"><img src="../../assets/icon/close.svg"/></button>  
+    <button ion-button no-padding no-margin style="position:relative;left: 83%;bottom: 28px; background-color: eef0f9;"class="userFilterCloseBtn" (click)="clearSearch()"><img src="../../assets/icon/close.svg"/></button>  
   </ion-row>
 
   <ion-grid class="btmFilter">
@@ -63,19 +63,19 @@
 
 <!-- Navbar -->
 <ion-header [translucent]="true">
-    <ion-toolbar color="translucent">
+    <ion-toolbar style ="padding-top: 3%; padding-bottom: 3%;" color="translucent">
         <ion-button (click)="tap9times()" class="attendance-title" style="--background:transparent; --box-shadow: none; " >
             Attendance
         </ion-button>
 
         <ion-buttons slot="primary">
-            <ion-button style="--background:#E5E5E5;" (click)="openDetails()" id="details">
+            <ion-button style="--background:#E5E5E5; margin-left:-25%;" (click)="openDetails()" id="details">
                 <ion-icon size="small" slot="icon-only" name="alert-circle-outline"></ion-icon>
             </ion-button>
-            <ion-button style="--background:#E5E5E5;" (click)="openLogs()" expand="block" id="logs" colour="medium">
+            <ion-button style="--background:#E5E5E5; margin-left: 7%;" (click)="openLogs()" expand="block" id="logs" colour="medium">
                 <ion-icon size="small" slot="icon-only" name="list-circle-outline"></ion-icon>
             </ion-button>
-            <ion-button style="--background:#E5E5E5;" (click)="stopPreview()" colour="medium">
+            <ion-button style="--background:#E5E5E5; margin-left: 7%;" (click)="stopPreview()" colour="medium">
                 <ion-icon size="small" slot="icon-only" name="power-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
@@ -183,7 +183,7 @@
       <!--  -->
       <ion-row class="header1">
         <ion-col>
-          <div>Shift timing(s)</div>
+          <div>Shifts</div>
         </ion-col>
       </ion-row>
       <!--  -->
@@ -197,7 +197,7 @@
       <ion-row>
         <!-- row 1 /2  -->
         <ion-col class="default">
-          <div>Shift timing</div>
+          <div>Shifts</div>
         </ion-col>
         <!-- print Supervisor shift timing dynamically -->
         <ion-col class="default" id='ShiftTimeSupervisor'>
@@ -240,8 +240,8 @@
                 <!-- <ion-row><p><ion-icon size="large" name="person-outline"></ion-icon></p></ion-row> -->
               </div>
               <ion-row>
-              <ion-col class="img-outline-left"><img style="width: 74%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
-              <ion-col class="img-outline-right"><img style="width: 74%;" src="../../assets/icon/RightSideFace.png"></ion-col>
+              <ion-col class="img-outline-left"><img style="width: 75%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+              <ion-col class="img-outline-right"><img style="width: 75%;" src="../../assets/icon/RightSideFace.png"></ion-col>
             </ion-row>
         </div>
 
@@ -253,8 +253,8 @@
                 <!-- <ion-row><p><ion-icon name="refresh"></ion-icon></p></ion-row> -->
             </div>
             <ion-row>
-            <ion-col class="img-outline-left"><img style="width: 74%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
-            <ion-col class="img-outline-right"><img style="width: 74%;" src="../../assets/icon/RightSideFace.png"></ion-col>
+            <ion-col class="img-outline-left"><img style="width: 75%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+            <ion-col class="img-outline-right"><img style="width: 75%;" src="../../assets/icon/RightSideFace.png"></ion-col>
             <!--               <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
             <ion-col><img  style="margin-right: 5%;"src="../../assets/icon/RightSideFace.png"></ion-col> -->
           </ion-row>
