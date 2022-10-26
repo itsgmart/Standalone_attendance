@@ -83,8 +83,8 @@ ion-content{
   width: 100%;
   position: absolute;
   background-color: #FFFFFF;
-  border-top-left-radius: 17px;
-  border-top-right-radius: 17px;
+  // border-top-left-radius: 17px;
+  // border-top-right-radius: 17px;
   border-radius: 0;
   bottom: 0;
   box-shadow: 0 4px 4px 0 $black-5;
@@ -356,21 +356,11 @@ ion-content{
   }
 }
 
-// .Login_container{
-//   display:block;
-//   position:relative;
-//   top:15%;
-// }
-
-// .login_btn_box {
-//   display:block;
-//   text-align: center;
-// }
 
 .login-bg-holder {
   z-index: 3;
   position: relative;
-  height: 30vh;
+  height: 32vh;
   // background-image: url('../../assets/imgs/home_bg.png');
   background-position: top center;
   background-repeat: no-repeat;
@@ -455,8 +445,8 @@ ion-content{
   height: 70vh;
   width: 100%;
   background-color: #FFFFFF;
-  border-top-left-radius: 17px;
-  border-top-right-radius: 17px;
+  // border-top-left-radius: 17px;
+  // border-top-right-radius: 17px;
   bottom: 0;
   // box-shadow: 0 4px 4px 0 $black-5;
 
@@ -544,6 +534,7 @@ ion-content{
         box-shadow: 0 4px 20px 0 #FF6F24;
         border-radius: 8px;
         border: 1px solid #E56420;
+        font-size: 1.7vh;
 
         .button-inner {
           font-size: $font-size-15;

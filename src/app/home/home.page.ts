@@ -17,7 +17,7 @@ export class HomePage {
   storage = this.global.storage;
   log = {};
   selectOptions:any;
-  localUrl = 'http://192.168.0.155';
+  localUrl = 'http://192.168.0.179';
   
   constructor(private globalization: Globalization, public global: GlobalProviderService, public http: HttpClient, public toastController: ToastController, private navCtrl : NavController, private loader:LoadingController) {
   }

@@ -17,6 +17,7 @@ import { resolve } from 'dns';
 import { ChildActivationStart } from '@angular/router';
 import { Router } from '@angular/router';
 import { threadId } from 'worker_threads';
+import { AlertController } from '@ionic/angular';
 
 
 
@@ -51,6 +52,7 @@ export class PreviewPage implements OnInit {
   modal: HTMLElement;
   faceDetected: boolean = false;
 
+  backdropDismiss: false
 
   url: any;
   show_details = false;
@@ -109,7 +111,7 @@ export class PreviewPage implements OnInit {
   blackScreenLoader: any;
 
 
-  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController) {}
+  constructor(private global: GlobalProviderService, private http : HttpClient, public toastController: ToastController, private modalCtrl:ModalController, private router: Router, private navCtrl: NavController, private loader:LoadingController, public  alertCtrl: AlertController) {}
 
   ngOnInit() {
     console.log('initialising preview page');
@@ -140,8 +142,37 @@ export class PreviewPage implements OnInit {
   }
 
 
+  async showAlert() {
+    const alert = await this.alertCtrl.create({
+      header: 'Alert',
+      subHeader: 'Logout of current account',
+      message: 'Press "OK" to logout',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'OK',
+          handler: () => {
+            this.storage.clear();
+            this.router.navigateByUrl('/home')
+            console.log(this.taptap);
+          }
+        }
+      ]
+      ,backdropDismiss: false // <- Here! :)
+    });
+
+    await alert.present();
+  }
+
   tap9times() 
   { 
+    
     this.taptap = this.taptap - 1;
 
     if (this.taptap > 0)
@@ -159,12 +190,7 @@ export class PreviewPage implements OnInit {
       {
         this.taptap = 9;
         let text = "Press a button!\nEither OK or Cancel.";
-        if (confirm(text) == true)
-          {
-            this.storage.clear();
-            this.router.navigateByUrl('/home')
-            console.log(this.taptap);
-          }
+        this.showAlert();
       }
   }
 
