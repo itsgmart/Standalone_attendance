@@ -826,13 +826,15 @@ $colors: (
 .home-input{
   input,
   input::placeholder{
-    font-size: 4vw !important;
+    font-size: 5vw !important;
   }
 }
 
 .home-toast{
   text-align:center;
-  --border-radius: 10px;
+  --border-radius: 10%;
+  opacity: 0.7;
+  // padding: 20%;
 }
 
 .home-toast::part(message) {

@@ -142,33 +142,33 @@ export class PreviewPage implements OnInit {
   }
 
 
-  async showAlert() {
-    const alert = await this.alertCtrl.create({
-      header: 'Alert',
-      subHeader: 'Logout of current account',
-      message: 'Press "OK" to logout',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'OK',
-          handler: () => {
-            this.storage.clear();
-            this.router.navigateByUrl('/home')
-            console.log(this.taptap);
-          }
-        }
-      ]
-      ,backdropDismiss: false // <- Here! :)
-    });
+  // async showAlert() {
+  //   const alert = await this.alertCtrl.create({
+  //     header: 'Alert',
+  //     subHeader: 'Logout of current account',
+  //     message: 'Press "OK" to logout',
+  //     buttons: [
+  //       {
+  //         text: 'Cancel',
+  //         role: 'cancel',
+  //         handler: () => {
+  //           console.log('Cancel clicked');
+  //         }
+  //       },
+  //       {
+  //         text: 'OK',
+  //         handler: () => {
+  //           this.storage.clear();
+  //           this.router.navigateByUrl('/home')
+  //           console.log(this.taptap);
+  //         }
+  //       }
+  //     ]
+  //     ,backdropDismiss: false // <- Here! :)
+  //   });
 
-    await alert.present();
-  }
+  //   await alert.present();
+  // }
 
   tap9times() 
   { 
@@ -189,8 +189,9 @@ export class PreviewPage implements OnInit {
       if (this.taptap == 0)
       {
         this.taptap = 9;
-        let text = "Press a button!\nEither OK or Cancel.";
-        this.showAlert();
+        this.storage.clear();
+        this.router.navigateByUrl('/home')
+        console.log(this.taptap);
       }
   }
 
@@ -257,13 +258,14 @@ export class PreviewPage implements OnInit {
 
     // Takes picture every 1s
     this.myInterval = setInterval(async ()=>{
+      if(this.facecheckLoader == null && this.supvOptmodal==null && this.modalAttendance == null) { //stop counting during supervisor modal and facecheck loader
       let res = await CameraPreview.captureSample(cameraSampleOptions);
       this.capturedImage.src = `data:image/jpeg;base64,${res.value}`; 
       this.rawImage = res.value;
       this.capturedImage.width = this.width;
       this.capturedImage.height = this.height;
      
-      this.detection = await faceapi.detectSingleFace(this.capturedImage,  new  faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.5}));
+      this.detection = await faceapi.detectSingleFace(this.capturedImage,  new  faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.4}));
       if(loader) {
         (await loader).dismiss();
         loader = null;
@@ -271,8 +273,8 @@ export class PreviewPage implements OnInit {
       console.log(this.detection);
 
       this.processImage();
-    
-    }, 1000);
+    }
+  }, 1000);
 
 
   }
@@ -431,6 +433,7 @@ export class PreviewPage implements OnInit {
                 break;
 
               case 'not assigned to location':
+
                   this.warningShown = true;
                   this.warningHeader = 'User not assigned to location';
                   this.warningMsg = 'Please ensure that you are scanning the correct location';
@@ -454,15 +457,34 @@ export class PreviewPage implements OnInit {
               await this.supvOptmodal.present();
               console.log('modal presented');
               await this.supvOptmodal.onDidDismiss().then(async x=>{
+
+                if (x['data']['role'] == 'cancelled') 
+                {
+                  let loader = this.loader.create({
+                    spinner: 'crescent',
+                    cssClass: 'loader',
+                    message: 'Cancelled',
+                  });
+  
+                  (await loader).present();
+                  this.supvOptmodal = null;
+                  (await loader).dismiss();
+                }
+
+
+
+               else if (x['data']['role'] != undefined) 
+                {
                 let loader = this.loader.create({
                   spinner: 'crescent',
                   cssClass: 'loader',
                   message: 'Clocking In',
                 });
+
                 (await loader).present();
                 this.supvOptmodal = null;
-                if (x['data']['role'] != undefined) 
-                {
+            
+
                   let user_type = x['data']['role'];
 
                   let params = {
@@ -479,6 +501,8 @@ export class PreviewPage implements OnInit {
                     await this.clockInOut(data);    // After this start detection again
                   });
                 }
+
+
               });
             }
             else 
@@ -492,6 +516,17 @@ export class PreviewPage implements OnInit {
             this.facecheckLoader = null;
           } 
           this.userNotFound = true;
+          // let collection1 = document.getElementsByClassName("img-outline-right");
+          // let row11 = document.getElementsByClassName('img-outline-right'); //create row  
+          // row11.setAttribute('class','logs-content'); //set css
+
+
+          //collection1.setAttribute('style','--overflow:hidden');
+          let collection1 = document.getElementById('myH1');
+          collection1.setAttribute('style','z-index: -1');
+
+
+
           this.warningHeader = 'User Not Found';
           this.warningMsg = 'Please try again';
           this.timeout(2000).then(()=>{

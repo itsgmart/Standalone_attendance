@@ -30,7 +30,7 @@ export class SupvOptionComponent implements OnInit
   cancel() 
   {
     console.log('cancel pressed');
-    this.modal.dismiss({'role': ''});
+    this.modal.dismiss({'role': 'cancelled'});
   } 
 
   submit() 

@@ -233,28 +233,28 @@
 
       
         <!-- Detecting face, please wait -->
-        <div  *ngIf="!faceDetected" class="overlayMsg" style="margin-top: 5%;">
+        <div  *ngIf="!faceDetected" class="overlayMsg" style="margin-top: 5%; z-index: -10; ">
             <div class="overlayText" style="color:black;">
                 Detecting face,
                 <p style="margin:5px ;text-align:center;"><span style="font-size:3vh;">please wait...</span></p>
                 <!-- <ion-row><p><ion-icon size="large" name="person-outline"></ion-icon></p></ion-row> -->
               </div>
               <ion-row>
-              <ion-col class="img-outline-left"><img style="width: 75%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
-              <ion-col class="img-outline-right"><img style="width: 75%;" src="../../assets/icon/RightSideFace.png"></ion-col>
+              <ion-col id="myH1" class="img-outline-left"><img style="width: 75%; z-index: -10;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+              <ion-col id="myH1" class="img-outline-right"><img style="width: 75%; z-index: -10;" src="../../assets/icon/RightSideFace.png"></ion-col>
             </ion-row>
         </div>
 
         <!-- Face detected. Keep still -->
-        <div  *ngIf="faceDetected" class="overlayMsg" style="margin-top: 5%;">
+        <div  *ngIf="faceDetected" class="overlayMsg" style="margin-top: 5%; z-index: -10;">
             <div class="overlayText">
                 Please keep still for
                 <p style="margin:5px ;text-align:center;"><span style="font-weight: bold; font-size:3vh;">[{{count}}]</span></p>
                 <!-- <ion-row><p><ion-icon name="refresh"></ion-icon></p></ion-row> -->
             </div>
             <ion-row>
-            <ion-col class="img-outline-left"><img style="width: 75%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
-            <ion-col class="img-outline-right"><img style="width: 75%;" src="../../assets/icon/RightSideFace.png"></ion-col>
+            <ion-col id="myH1" class="img-outline-left"><img style="width: 75%; z-index: -10;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+            <ion-col id="myH1" class="img-outline-right"><img style="width: 75%; z-index: -10;" src="../../assets/icon/RightSideFace.png"></ion-col>
             <!--               <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
             <ion-col><img  style="margin-right: 5%;"src="../../assets/icon/RightSideFace.png"></ion-col> -->
           </ion-row>
@@ -297,13 +297,13 @@
 
 
         <!-- User not found -->
-        <div *ngIf="userNotFound" class="backdrop" style="display:block;">
+        <div *ngIf="userNotFound" class="backdrop" style="display:block; z-index: 21;">
           <ion-col class="overlayMsg">
             <ion-row class="overlayWarningTextTop">
-              <ion-row><ion-icon name="person-add-outline"></ion-icon>&nbsp;</ion-row>
+              <ion-row style="z-index: 21;" ><ion-icon name="person-add-outline"></ion-icon>&nbsp;</ion-row>
               {{warningHeader}}
             </ion-row>
-            <ion-row class="overlayWarningTextBtm" style="padding-left: 58px;">
+            <ion-row class="overlayWarningTextBtm" style="padding-left: 58px;z-index: 21;">
               {{warningMsg}} 
               <!-- please try again -->
             </ion-row>

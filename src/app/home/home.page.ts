@@ -133,7 +133,15 @@ export class HomePage {
     });
   }
 
-  login() {
+  async login() {
+
+    let loader =  await this.loader.create({
+      spinner: 'crescent',
+      cssClass: 'loader',
+      message: 'Loading...',
+    });
+    await loader.present();
+
     this.storage.set('url', this.global.server_url).then((url) => {
       if (this.log['server_location'] == "SG-1") {
         url = "https://www.simpple.app";
@@ -160,6 +168,7 @@ export class HomePage {
           if (data == false) {
             let alertIcon = '<ion-icon name="alert-circle-outline"></ion-icon>';
             this.presentToast(alertIcon + " Wrong Credentials", "danger", false);
+            loader.dismiss();
           } else {
             let dateTime = new Date;
             this.storage.set('attendance_assignment', data);
@@ -168,17 +177,19 @@ export class HomePage {
             this.storage.set('login_status', true);
             let tickIcon = '<ion-icon name="checkmark-circle-outline"></ion-icon>';
             this.presentToast( tickIcon +" Login Successful", "success", true);
+            loader.dismiss();
           }
         });
       });
       
+       
     });
   }
 
   async presentToast(msg, color, err) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 2000,
+      duration: 1500,
       cssClass: 'home-toast',
       color: color,
       position: 'middle'
