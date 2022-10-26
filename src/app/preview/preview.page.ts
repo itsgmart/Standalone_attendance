@@ -103,7 +103,7 @@ export class PreviewPage implements OnInit {
   toofastHeader:any;
   toofastMsg:any;
   userNotFound: boolean;
-  localUrl = "http://192.168.0.155";
+  localUrl = 'http://192.168.0.155';
   isBlackOut = false;
   supvOptmodal: HTMLIonModalElement;
   blackScreenLoader: any;
@@ -231,21 +231,22 @@ export class PreviewPage implements OnInit {
 
     // Takes picture every 1s
     this.myInterval = setInterval(async ()=>{
-      let res = await CameraPreview.captureSample(cameraSampleOptions);
-      this.capturedImage.src = `data:image/jpeg;base64,${res.value}`; 
-      this.rawImage = res.value;
-      this.capturedImage.width = this.width;
-      this.capturedImage.height = this.height;
-     
-      this.detection = await faceapi.detectSingleFace(this.capturedImage,  new  faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.5}));
-      if(loader) {
-        (await loader).dismiss();
-        loader = null;
-      }
-      console.log(this.detection);
+      if(this.facecheckLoader == null) {
+        let res = await CameraPreview.captureSample(cameraSampleOptions);
+        this.capturedImage.src = `data:image/jpeg;base64,${res.value}`; 
+        this.rawImage = res.value;
+        this.capturedImage.width = this.width;
+        this.capturedImage.height = this.height;
+      
+        this.detection = await faceapi.detectSingleFace(this.capturedImage,  new  faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.5}));
+        if(loader) {
+          (await loader).dismiss();
+          loader = null;
+        }
+        console.log(this.detection);
 
-      this.processImage();
-    
+        this.processImage();
+      }
     }, 1000);
 
 
@@ -375,7 +376,7 @@ export class PreviewPage implements OnInit {
       };
       console.log("params:", params);
       console.log(url);
-      url = this.localUrl;
+      url = this.localUrl ==  undefined? url: this.localUrl;
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
         
@@ -605,7 +606,12 @@ export class PreviewPage implements OnInit {
    */
 
   async openLogs() {     
+    if(this.isDetailsOpen) {
+      this.isDetailsOpen = false;
+      // await this.getLogs(false, undefined);
+    }
     this.isLogsOpen = true;
+    
     clearInterval(this.myInterval);
     this.content.setAttribute('style','--overflow:hidden');
     this.content.scrollToTop(0);
@@ -669,7 +675,7 @@ export class PreviewPage implements OnInit {
         console.log("debug");
         console.log(params);
   
-        url = this.localUrl;
+        url = this.localUrl ==  undefined? url: this.localUrl;
         this.http.post(url + '/api/attendance/getLogsV3', params, httpOptions).subscribe(async data => {
           
           
@@ -833,7 +839,7 @@ export class PreviewPage implements OnInit {
       const params = {
         "attendance_id" : this.id,
       };
-      url = this.localUrl; 
+      url = this.localUrl ==  undefined? url: this.localUrl;
       this.http.post(url + '/api/attendance/getAttendanceAssignmentUsers', params, httpOptions).subscribe(async data => {
         this.allUsers = data['users'];
         this.userLoaded = true;
@@ -924,6 +930,19 @@ export class PreviewPage implements OnInit {
    * Details modal functions
    */
   async openDetails() {
+    if(this.isLogsOpen) {
+      this.isLogsOpen = false;
+
+      this.logCached = {
+        All: [],
+        Clock_In: [],
+        Clock_Out: []
+      }
+      this.selectedName = 'All';
+      this.clkinOffset = 0;
+      this.clkoutOffset = 0;
+      this.firstLoad = true;
+    }
     this.isDetailsOpen = true;
     clearInterval(this.myInterval);
     this.content.setAttribute('style','--overflow:hidden');
