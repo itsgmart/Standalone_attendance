@@ -63,7 +63,7 @@ export class HomePage {
         }
       }
     });
-    // this.checkPrevLogin();
+    this.checkPrevLogin();
   }
 
 
@@ -108,8 +108,8 @@ export class HomePage {
                 'last_login_date' : last_login
               }
             
-              console.log(url);
-              url= this.localUrl;
+              console.log(last_login);
+              url = this.localUrl ==  undefined? url: this.localUrl;
               this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
                 await loader.dismiss();
                 if (data == false) {
@@ -163,7 +163,7 @@ export class HomePage {
         }
         
         console.log(url);
-        url = this.localUrl;
+        url = this.localUrl ==  undefined? url: this.localUrl;
         this.http.post(url + '/api/attendance/getAttendanceAssignmentID', this.log, httpOptions).subscribe(data => {
           if (data == false) {
             let alertIcon = '<ion-icon name="alert-circle-outline"></ion-icon>';
@@ -172,8 +172,8 @@ export class HomePage {
           } else {
             let dateTime = new Date;
             this.storage.set('attendance_assignment', data);
-            this.storage.set('last_login_date', dateTime.toLocaleString());
-            console.log('set date time ', dateTime.toLocaleString())
+            this.storage.set('last_login_date', dateTime.toLocaleString('en-US'));
+            console.log('set date time ', dateTime.toLocaleString('en-US'));
             this.storage.set('login_status', true);
             let tickIcon = '<ion-icon name="checkmark-circle-outline"></ion-icon>';
             this.presentToast( tickIcon +" Login Successful", "success", true);
