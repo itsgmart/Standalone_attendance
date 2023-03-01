@@ -17,8 +17,8 @@ export class HomePage {
   storage = this.global.storage;
   log = {};
   selectOptions:any;
-  localUrl = 'http://192.168.0.179';
-  
+  localUrl = 'http://192.168.100.143';
+
   constructor(private globalization: Globalization, public global: GlobalProviderService, public http: HttpClient, public toastController: ToastController, private navCtrl : NavController, private loader:LoadingController) {
   }
 
@@ -28,7 +28,7 @@ export class HomePage {
    */
   async ngOnInit(){
     console.log('ionViewDidLoad');
-    
+
     this.selectOptions = {
       cssClass: 'serverLocationModal',
       header: 'Select Server',
@@ -38,8 +38,9 @@ export class HomePage {
     // this.storage.set('attendance_assignment', '');
     this.storage.set('isDeviceIos', this.isDeviceIos());
     this.storage.get('url').then(data => {
-
       if (!data) {
+        console.log("No data");
+        console.log(data);
         this.globalization.getDatePattern({ formatLength: 'short', selector: 'date and time' }).then((name)=> {
           if (name['timezone'] == "GMT+08:00") {
             this.log['server_location'] = "SG-2";   // TBC
@@ -53,12 +54,17 @@ export class HomePage {
 
         });
       } else {
+        console.log("Have data");
+        console.log(data);
         this.global.server_url = data;
         if (data == "https://www.simpple.app") {
           this.log['server_location'] = "SG-1";
         } else if (data == "https://ca.simpple.app") {
           this.log['server_location'] = "Canada";
-        } else {
+        } else if (data == "https://qr.simpple.app") {
+          this.log['server_location'] = "Qatar";
+        }
+        else {
           this.log['server_location'] = "SG-2";
         }
       }
@@ -75,15 +81,18 @@ export class HomePage {
     });
     await loader.present();
 
-
+    console.log("Within check previous login");
     this.storage.get('attendance_assignment').then(async data=>{
-
+      console.log("Attendance assignment data -> ");
+      console.log(data);
       if(data) {
         let last_login;
         this.storage.get('last_login_date').then(x => {
           last_login = x;
-
+          console.log(this.global.server_url);
           this.storage.set('url', this.global.server_url).then((url) => {
+            console.log(url);
+            console.log('server_location');
             if (this.log['server_location'] == "SG-1") {
               url = "https://www.simpple.app";
             } else if (this.log['server_location'] == "SG-2") {
@@ -93,7 +102,7 @@ export class HomePage {
             } else if (this.log['server_location'] == "Qatar") {
               url = "https://qr.simpple.app"
             }
-      
+
             this.storage.set('url', url).then((url) => {
               const httpOptions = {
                 headers: new HttpHeaders({
@@ -102,14 +111,15 @@ export class HomePage {
                   'Access-Control-Allow-Origin': '*'
                 })
               }
-      
+
               let params = {
                 'assignment_id' : data['attendance_assignment']['id'],
                 'last_login_date' : last_login
               }
-            
+
               console.log(last_login);
               url = this.localUrl ==  undefined? url: this.localUrl;
+              console.log('last url -'+url);
               this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
                 await loader.dismiss();
                 if (data == false) {
@@ -121,15 +131,15 @@ export class HomePage {
                 if(error['status'] != 200) {
                   await loader.dismiss();
                 }
-
-
               });
             });
           });
         });
       }
-      else
+      else{
+        console.log("Loader should be dismissed here");
         await loader.dismiss();
+      }
     });
   }
 
@@ -161,9 +171,10 @@ export class HomePage {
             'Access-Control-Allow-Origin': '*'
           })
         }
-        
+
         console.log(url);
         url = this.localUrl ==  undefined? url: this.localUrl;
+        console.log("URL being used to login - "+url);
         this.http.post(url + '/api/attendance/getAttendanceAssignmentID', this.log, httpOptions).subscribe(data => {
           if (data == false) {
             let alertIcon = '<ion-icon name="alert-circle-outline"></ion-icon>';
@@ -181,8 +192,8 @@ export class HomePage {
           }
         });
       });
-      
-       
+
+
     });
   }
 
@@ -196,16 +207,16 @@ export class HomePage {
     });
     toast.present();
     await toast.onDidDismiss().then(()=>{
-      if (err) 
+      if (err)
         this.navCtrl.navigateRoot('preview');
-    }); 
+    });
 
   }
 
 
   /**
    * Checks if device is IOS
-   * 
+   *
    * @returns true or false
    */
 
