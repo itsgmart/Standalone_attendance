@@ -50,7 +50,7 @@ export class HomePage {
           } else if (name['timezone'] == "GMT+03:00") {
             this.log['server_location'] = "Qatar";
           } else {
-            this.log['server_location'] = "Qatar";
+            this.log['server_location'] = "SG-2";
           }
         });
       } else {
@@ -122,7 +122,7 @@ export class HomePage {
               }
 
               console.log(last_login);
-              url = this.localUrl ==  undefined? url: this.localUrl;
+              // url = this.localUrl;
               console.log('last url -'+url);
               this.http.post(url + '/api/attendance/verifyAttendanceAssignment', params, httpOptions).subscribe(async data => {
                 await loader.dismiss();
@@ -181,7 +181,7 @@ export class HomePage {
         }
 
         console.log(url);
-        url = this.localUrl ==  undefined? url: this.localUrl;
+        // url = this.localUrl;
         console.log("URL being used to login - "+url);
         this.http.post(url + '/api/attendance/getAttendanceAssignmentID', this.log, httpOptions).subscribe(data => {
           if (data == false) {

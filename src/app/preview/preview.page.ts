@@ -403,7 +403,7 @@ export class PreviewPage implements OnInit {
       };
       console.log("params:", params);
       console.log(url);
-      url = this.localUrl ==  undefined? url: this.localUrl;
+      // url = this.localUrl;
       this.http.post(url + '/api/attendance/checkAttendance', params, httpOptions).subscribe(async data => {
         console.log(data);
 
@@ -739,7 +739,7 @@ export class PreviewPage implements OnInit {
         console.log("debug");
         console.log(params);
 
-        url = this.localUrl ==  undefined? url: this.localUrl;
+        // url = this.localUrl;
         this.http.post(url + '/api/attendance/getLogsV3', params, httpOptions).subscribe(async data => {
 
 
@@ -903,7 +903,7 @@ export class PreviewPage implements OnInit {
       const params = {
         "attendance_id" : this.id,
       };
-      url = this.localUrl ==  undefined? url: this.localUrl;
+      // url = this.localUrl;
       this.http.post(url + '/api/attendance/getAttendanceAssignmentUsers', params, httpOptions).subscribe(async data => {
         this.allUsers = data['users'];
         this.userLoaded = true;
