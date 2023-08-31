@@ -1,7 +1,8 @@
 {
   "name": "camera-preview",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

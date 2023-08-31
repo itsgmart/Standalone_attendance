@@ -105,7 +105,7 @@ export class PreviewPage implements OnInit {
   toofastHeader:any;
   toofastMsg:any;
   userNotFound: boolean;
-  localUrl = 'http://192.168.0.155';
+  localUrl = 'http://192.168.100.143';
   isBlackOut = false;
   supvOptmodal: HTMLIonModalElement;
   blackScreenLoader: any;
@@ -409,7 +409,6 @@ export class PreviewPage implements OnInit {
 
         // check if face is in aws face collection
         if(data) {
-
           // if unable to clock in/out, show msg on toast
           // else get data to display on attendanceModal
           if(data['status'] != null) {
@@ -529,7 +528,7 @@ export class PreviewPage implements OnInit {
 
           this.warningHeader = 'User Not Found';
           this.warningMsg = 'Please try again';
-          this.timeout(2000).then(()=>{
+          this.timeout(3000).then(()=>{ // Dismiss after 3 seconds
             this.userNotFound = false;
           });
         }
@@ -569,6 +568,7 @@ export class PreviewPage implements OnInit {
       },
       cssClass: 'my-custom-class',
       showBackdrop: true,
+      backdropDismiss: true
     });
     if (this.facecheckLoader != null) {
       await this.facecheckLoader.dismiss();
@@ -580,7 +580,11 @@ export class PreviewPage implements OnInit {
     this.modalAttendance.onDidDismiss().then(()=> {
       this.modalAttendance = null;
       console.log('modal onDidDismiss');
+    });
 
+    this.timeout(3000).then(()=>{ // Automatically dismiss after 5 seconds
+      console.log("DISMISSING MODAL ATTENDANCE AFTER 5 SECONDS");
+      this.modalAttendance.dismiss();
     });
   }
 

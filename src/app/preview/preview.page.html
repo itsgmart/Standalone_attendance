@@ -11,11 +11,11 @@
 
   <ion-row class="filterSelectUser">
     <div class="icon-holder"><ion-icon name="people-outline"></ion-icon></div>
-    <ion-label>User</ion-label> 
+    <ion-label>User</ion-label>
     <div tappable class="select" (click)="showSelectedModal()">
       {{selectedName}}
     </div>
-    <button ion-button no-padding no-margin style="position:relative;left: 83%;bottom: 28px; background-color: eef0f9;"class="userFilterCloseBtn" (click)="clearSearch()"><img src="../../assets/icon/close.svg"/></button>  
+    <button ion-button no-padding no-margin style="position:relative;left: 83%;bottom: 28px; background-color: eef0f9;"class="userFilterCloseBtn" (click)="clearSearch()"><img src="../../assets/icon/close.svg"/></button>
   </ion-row>
 
   <ion-grid class="btmFilter">
@@ -52,7 +52,7 @@
 </div>
 
 <div *ngIf="isBlackOut"   id="blackOut" tappable (click)="resumeDetection()">
-  
+
   <div class="blackoutCard">
     <div style="color:white; font-size: 3vh;">Tap Button to Turn Screen On</div>
     <br><ion-icon class="blackOutBtn"size="large"  style="margin-top: 7%; border: 5vw solid #FF6C27;" name="power-outline"></ion-icon>
@@ -90,7 +90,7 @@
     <!-- Logs Modal -->
     <ion-card class="card-container" *ngIf="isLogsOpen">
       <ion-content>
-        <div class="top"> 
+        <div class="top">
           <div class = "top-1">
             <!-- Filter Button -->
             <button class="filterBtn" (click)="showFilterModal()"><img src="../../assets/icon/Vector.svg">Filter</button>
@@ -100,13 +100,13 @@
               <!-- Close Button -->
             <button class="iconBtn" style="justify-content: flex-end;" (click)="closeLogModal()">
               <ion-icon name="close-circle-outline" ></ion-icon></button>
-            
+
           </div>
-      
+
           <div class="top-header">
             Attendance Logs
           </div>
-      
+
           <ion-segment (ionChange)="segmentChanged($event)" value="All" role="tablist" mode="md">
             <ion-segment-button value="All">
               <ion-row>
@@ -128,12 +128,12 @@
             </ion-segment-button>
           </ion-segment>
         </div>
-        
+
 
         <div id="logs-card">
-          
+
         </div>
-        
+
         <!-- For loading  -->
         <ion-infinite-scroll position="bottom" threshold="5%" (ionInfinite)="loadData($event)">
           <ion-infinite-scroll-content
@@ -156,19 +156,19 @@
           <ion-icon name="close-circle-outline"></ion-icon>
         </button>
       </ion-row>
-      
+
       <!-- Attendance Below here  -->
-      
+
       <ion-row>
         <ion-col class="default">
           <div>Location Code: </div>
         </ion-col>
         <ion-col class="default">
-          {{assignment.location}}
+          {{assignment.location_code}}
         </ion-col>
       </ion-row>
       <!--  -->
-      
+
       <!--  -->
       <ion-row>
         <ion-col class="default">
@@ -179,7 +179,7 @@
         </ion-col>
       </ion-row>
       <!--  -->
-      
+
       <!--  -->
       <ion-row class="header1">
         <ion-col>
@@ -187,7 +187,7 @@
         </ion-col>
       </ion-row>
       <!--  -->
-      
+
       <!--  -->
       <ion-row>
         <ion-col class="header2">
@@ -204,8 +204,8 @@
         </ion-col>
       </ion-row>
       <!--  -->
-      
-      
+
+
       <!--  -->
       <ion-row>
         <ion-col class="header2">
@@ -226,12 +226,12 @@
     </ion-grid>
 
 
-      
+
 
 
     <div id="content">
 
-      
+
         <!-- Detecting face, please wait -->
         <div  *ngIf="!faceDetected" class="overlayMsg" style="margin-top: 5%; z-index: -10; ">
             <div class="overlayText" style="color:black;">
@@ -240,7 +240,7 @@
                 <!-- <ion-row><p><ion-icon size="large" name="person-outline"></ion-icon></p></ion-row> -->
               </div>
               <ion-row>
-              <ion-col id="myH1" class="img-outline-left"><img style="width: 75%; z-index: -10;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+              <ion-col id="myH1" class="img-outline-left"><img style="width: 75%; z-index: -10;" src="../../assets/icon/LeftSideFace.png"></ion-col>
               <ion-col id="myH1" class="img-outline-right"><img style="width: 75%; z-index: -10;" src="../../assets/icon/RightSideFace.png"></ion-col>
             </ion-row>
         </div>
@@ -253,13 +253,13 @@
                 <!-- <ion-row><p><ion-icon name="refresh"></ion-icon></p></ion-row> -->
             </div>
             <ion-row>
-            <ion-col id="myH1" class="img-outline-left"><img style="width: 75%; z-index: -10;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+            <ion-col id="myH1" class="img-outline-left"><img style="width: 75%; z-index: -10;" src="../../assets/icon/LeftSideFace.png"></ion-col>
             <ion-col id="myH1" class="img-outline-right"><img style="width: 75%; z-index: -10;" src="../../assets/icon/RightSideFace.png"></ion-col>
-            <!--               <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col> 
+            <!--               <ion-col><img style="margin-left: 5%;" src="../../assets/icon/LeftSideFace.png"></ion-col>
             <ion-col><img  style="margin-right: 5%;"src="../../assets/icon/RightSideFace.png"></ion-col> -->
           </ion-row>
         </div>
-        
+
 
         <!-- Too Fast -->
         <div *ngIf="tooFast">
@@ -304,12 +304,12 @@
               {{warningHeader}}
             </ion-row>
             <ion-row class="overlayWarningTextBtm" style="padding-left: 58px;z-index: 21;">
-              {{warningMsg}} 
+              {{warningMsg}}
               <!-- please try again -->
             </ion-row>
           </ion-col>
         </div>
 
-        
+
     </div>
 </ion-content>
