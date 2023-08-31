@@ -42,6 +42,7 @@ export class HomePage {
         console.log("No data");
         console.log(data);
         this.globalization.getDatePattern({ formatLength: 'short', selector: 'date and time' }).then((name)=> {
+          console.log("TIMEZONE NAME = "+name['timezone']);
           if (name['timezone'] == "GMT+08:00") {
             this.log['server_location'] = "SG-2";   // TBC
           } else if (name['timezone'] == "GMT-05:00") {
@@ -49,9 +50,8 @@ export class HomePage {
           } else if (name['timezone'] == "GMT+03:00") {
             this.log['server_location'] = "Qatar";
           } else {
-            this.log['server_location'] = "SG-2";
+            this.log['server_location'] = "Qatar";
           }
-
         });
       } else {
         console.log("Have data");
@@ -63,6 +63,8 @@ export class HomePage {
           this.log['server_location'] = "Canada";
         } else if (data == "https://qr.simpple.app") {
           this.log['server_location'] = "Qatar";
+        } else if (data == "https://stage.simpple.app") {
+          this.log['server_location'] = "Stage";
         }
         else {
           this.log['server_location'] = "SG-2";
@@ -101,6 +103,8 @@ export class HomePage {
               url = "https://ca.simpple.app";
             } else if (this.log['server_location'] == "Qatar") {
               url = "https://qr.simpple.app"
+            } else if (this.log['server_location'] == "Stage") {
+              url = "https://stage.simpple.app"
             }
 
             this.storage.set('url', url).then((url) => {
@@ -152,6 +156,8 @@ export class HomePage {
     });
     await loader.present();
 
+    console.log("Login function");
+    console.log("Global server url = "+this.global.server_url);
     this.storage.set('url', this.global.server_url).then((url) => {
       if (this.log['server_location'] == "SG-1") {
         url = "https://www.simpple.app";
@@ -161,6 +167,8 @@ export class HomePage {
         url = "https://ca.simpple.app";
       } else if (this.log['server_location'] == "Qatar") {
         url = "https://qr.simpple.app"
+      } else if (this.log['server_location'] == "Stage") {
+        url = "https://stage.simpple.app"
       }
 
       this.storage.set('url', url).then((url) => {
